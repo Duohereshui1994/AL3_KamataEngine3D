@@ -50,9 +50,6 @@ void GameScene::Initialize() {
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
-	// Line描画が参照するビュープロジェクションを指定する（アドレス渡し）
-	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
-
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(/*画面横幅*/ 1080, /*画面縦幅*/ 720);
 
@@ -62,6 +59,9 @@ void GameScene::Initialize() {
 
 	// 軸方向が参照するビュープロジェクションを指定する（アドレス渡し）
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
+
+	// Line描画が参照するビュープロジェクションを指定する（アドレス渡し）
+	PrimitiveDrawer::GetInstance()->SetViewProjection(/*&viewProjection_*/ &debugCamera_->GetViewProjection());
 
 	//===================================================================
 }
