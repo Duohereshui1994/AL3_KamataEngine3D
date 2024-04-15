@@ -132,7 +132,10 @@ void GameScene::Draw() {
 
 	//===================================================================
 
+	//Lineの描画
 	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {0, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
+	PrimitiveDrawer::GetInstance()->DrawLine3d({10, 0, 0}, {10, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
+	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {10, 0, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
 
 	//===================================================================
 #pragma endregion
