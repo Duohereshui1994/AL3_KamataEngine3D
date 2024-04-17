@@ -44,7 +44,7 @@ void GameScene::Initialize() {
 
 	//soundDataHandle_ = audio_->LoadWave("fanfare.wav");
 
-	// 音声再生	播放声音
+	// 音声再生	播放声音 两个都是能播放声音的，建议使用第二种
 
 	//audio_->PlayWave(soundDataHandle_);
 	//voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);//第二个参数是是否循环播放
