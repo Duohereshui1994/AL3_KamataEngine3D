@@ -8,6 +8,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "DebugCamera.h"//DebugCameraを利用するため	为了使用DebugCamera
+#include "Player.h"
 
 /// <summary>
 /// ゲームシーン	GameScene
@@ -16,12 +17,12 @@ class GameScene {
 
 public: // メンバ関数
 	/// <summary>
-	/// コンストクラタ	构造函数
+	/// コンストクラタ
 	/// </summary>
 	GameScene();
 
 	/// <summary>
-	/// デストラクタ		析构函数
+	/// デストラクタ
 	/// </summary>
 	~GameScene();
 
@@ -31,57 +32,36 @@ public: // メンバ関数
 	void Initialize();
 
 	/// <summary>
-	/// 毎フレーム処理	每帧处理
+	/// 毎フレーム処理
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// 描画		描画
+	/// 描画	
 	/// </summary>
 	void Draw();
 
-private: // メンバ変数	成员变量
+private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;	//输入
 	Audio* audio_ = nullptr;	//音频Audio
 
 	//===================================================================
-	
-	//デバッグカメラ		DebugCamera
-	
-	//DebugCamera* debugCamera_ = nullptr;
-	
-	//スプライト		Sprite
-	
-	//Sprite* sprite_ = nullptr;
 
 	//3Dモデル	3D模型
 	
-	//Model* model_ = nullptr;
-
-	//サウンドデータハンドル	声音控制器 加载声音用
-	
-	//uint32_t soundDataHandle_ = 0;
-
-	//音声再生ハンドル	声音播放控制器 控制声音的播放循环等用
-	
-	//uint32_t voiceHandle_ = 0;
+	Model* model_ = nullptr;
 
 	//テクスチャハンドル	图片控制器 存入图片用的
 	
-	//uint32_t textureHandle_ = 0;
-
-	//ワールドトランスフォーム		WorldTransform 世界变换（坐标）
-	
-	//WorldTransform worldTransform_;
+	uint32_t textureHandle_ = 0;
 	
 	//ビュープロジェクション		视图投影
 	
-	//ViewProjection viewProjection_;
+	ViewProjection viewProjection_;
 
-	//ImGUIで値を入力する変数 在ImGUI中输入值的变量
 
-	//float inputFloat3[3] = {0, 0, 0};
+	Player* player_ = nullptr;
 
 	//===================================================================
 
