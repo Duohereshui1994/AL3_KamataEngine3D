@@ -32,7 +32,7 @@ void GameScene::Initialize() {
 	soundDataHandle_ = audio_->LoadWave("fanfare.wav");
 
 	// 音声再生
-	audio_->PlayWave(soundDataHandle_);
+	//audio_->PlayWave(soundDataHandle_);
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 
 	// ファイル名を指定してテクスチャを読み込む
@@ -70,7 +70,7 @@ void GameScene::Update() {
 
 	//===================================================================
 
-	//スプライトの移動
+	// スプライトの移動
 	Vector2 position = sprite_->GetPosition();
 
 	position.x += 2.0f;
@@ -80,7 +80,11 @@ void GameScene::Update() {
 
 	// スペースキー押した瞬間 音声停止
 	if (input_->TriggerKey(DIK_SPACE)) {
-		audio_->StopWave(voiceHandle_);
+		if (audio_->IsPlaying(voiceHandle_)) {
+			audio_->StopWave(voiceHandle_);
+		} else {
+			voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
+		}
 	}
 
 	// デバッグテキストの表示
@@ -140,7 +144,7 @@ void GameScene::Draw() {
 
 	//===================================================================
 
-	//Lineの描画
+	// Lineの描画
 	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {0, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
 	PrimitiveDrawer::GetInstance()->DrawLine3d({10, 0, 0}, {10, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
 	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {10, 0, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
