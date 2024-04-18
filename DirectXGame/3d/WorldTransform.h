@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <wrl.h>
 
+
 // 定数バッファ用データ構造体
 struct ConstBufferDataWorldTransform {
 	Matrix4x4 matWorld; // ローカル → ワールド変換行列
@@ -34,6 +35,10 @@ public:
 	/// 初期化
 	/// </summary>
 	void Initialize();
+	/// <summary>
+	/// 行列の計算と転送
+	/// </summary>
+	void UpdateMatrix();
 	/// <summary>
 	/// 定数バッファ生成
 	/// </summary>

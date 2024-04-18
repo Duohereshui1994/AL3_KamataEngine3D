@@ -10,6 +10,7 @@
 #include "WorldTransform.h"
 #include <vector>
 
+
 /// <summary>
 /// ゲームシーン	GameScene
 /// </summary>
@@ -78,13 +79,13 @@ private: // メンバ変数	成员变量
 
 	// ビュープロジェクション		视图投影
 
-	// ViewProjection viewProjection_;
+	 ViewProjection viewProjection_;
 
 	// ImGUIで値を入力する変数 在ImGUI中输入值的变量
 
 	// float inputFloat3[3] = {0, 0, 0};
 
-	std::vector<WorldTransform*> worldTransformBlocks_;
+	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
 	//===================================================================
 
