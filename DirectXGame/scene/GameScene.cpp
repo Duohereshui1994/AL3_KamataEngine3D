@@ -70,6 +70,14 @@ void GameScene::Update() {
 
 	//===================================================================
 
+	//スプライトの移動
+	Vector2 position = sprite_->GetPosition();
+
+	position.x += 2.0f;
+	position.y += 1.0f;
+
+	sprite_->SetPosition(position);
+
 	// スペースキー押した瞬間 音声停止
 	if (input_->TriggerKey(DIK_SPACE)) {
 		audio_->StopWave(voiceHandle_);
