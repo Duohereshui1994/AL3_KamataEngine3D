@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Audio.h"
+#include "DebugCamera.h" //DebugCameraを利用するため	为了使用DebugCamera
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "DebugCamera.h"//DebugCameraを利用するため	为了使用DebugCamera
+#include <vector>
 
 /// <summary>
 /// ゲームシーン	GameScene
@@ -42,46 +43,48 @@ public: // メンバ関数
 
 private: // メンバ変数	成员变量
 	DirectXCommon* dxCommon_ = nullptr;
-	Input* input_ = nullptr;	//输入
-	Audio* audio_ = nullptr;	//音频Audio
+	Input* input_ = nullptr; // 输入
+	Audio* audio_ = nullptr; // 音频Audio
 
 	//===================================================================
-	
-	//デバッグカメラ		DebugCamera
-	
-	//DebugCamera* debugCamera_ = nullptr;
-	
-	//スプライト		Sprite
-	
-	//Sprite* sprite_ = nullptr;
 
-	//3Dモデル	3D模型
-	
-	//Model* model_ = nullptr;
+	// デバッグカメラ		DebugCamera
 
-	//サウンドデータハンドル	声音控制器 加载声音用
-	
-	//uint32_t soundDataHandle_ = 0;
+	// DebugCamera* debugCamera_ = nullptr;
 
-	//音声再生ハンドル	声音播放控制器 控制声音的播放循环等用
-	
-	//uint32_t voiceHandle_ = 0;
+	// スプライト		Sprite
 
-	//テクスチャハンドル	图片控制器 存入图片用的
-	
-	//uint32_t textureHandle_ = 0;
+	// Sprite* sprite_ = nullptr;
 
-	//ワールドトランスフォーム		WorldTransform 世界变换（坐标）
-	
-	//WorldTransform worldTransform_;
-	
-	//ビュープロジェクション		视图投影
-	
-	//ViewProjection viewProjection_;
+	// 3Dモデル	3D模型
 
-	//ImGUIで値を入力する変数 在ImGUI中输入值的变量
+	Model* model_ = nullptr;
 
-	//float inputFloat3[3] = {0, 0, 0};
+	// サウンドデータハンドル	声音控制器 加载声音用
+
+	// uint32_t soundDataHandle_ = 0;
+
+	// 音声再生ハンドル	声音播放控制器 控制声音的播放循环等用
+
+	// uint32_t voiceHandle_ = 0;
+
+	// テクスチャハンドル	图片控制器 存入图片用的
+
+	// uint32_t textureHandle_ = 0;
+
+	// ワールドトランスフォーム		WorldTransform 世界变换（坐标）
+
+	// WorldTransform worldTransform_;
+
+	// ビュープロジェクション		视图投影
+
+	// ViewProjection viewProjection_;
+
+	// ImGUIで値を入力する変数 在ImGUI中输入值的变量
+
+	// float inputFloat3[3] = {0, 0, 0};
+
+	std::vector<WorldTransform*> worldTransformBlocks_;
 
 	//===================================================================
 

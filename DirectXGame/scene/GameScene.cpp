@@ -18,12 +18,16 @@ GameScene::~GameScene() {
 
 	//释放模型 model
 
-	//delete model_;
+	delete model_;
 
 	//释放DebugCamera
 
 	//delete debugCamera_;
 
+	for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
+		delete worldTransformBlock;
+	}
+	worldTransformBlocks_.clear();
 	//===================================================================
 }
 
@@ -59,7 +63,7 @@ void GameScene::Initialize() {
 
 	// 3Dモデルの生成		生成3D模型
 
-	//model_ = Model::Create();
+	model_ = Model::Create();
 
 	// ワールドトランスフォームの初期化	初始化世界转换（坐标）
 
@@ -82,6 +86,17 @@ void GameScene::Initialize() {
 	// Line描画が参照するビュープロジェクションを指定する（アドレス渡し） 设定画线功能的参照投影视角（传递地址）
 
 	//PrimitiveDrawer::GetInstance()->SetViewProjection(/*&viewProjection_*/ &debugCamera_->GetViewProjection());
+
+	const uint32_t kNumberBlockHorizontal = 20;
+	const float kBlockWidth = 2.0f;
+	worldTransformBlocks_.resize(kNumberBlockHorizontal);
+
+	for (uint32_t i=0;i<kNumberBlockHorizontal;++i){
+		worldTransformBlocks_[i] = new WorldTransform();
+		worldTransformBlocks_[i]->Initialize();
+		worldTransformBlocks_[i]->translation_.x = kBlockWidth * i;
+		worldTransformBlocks_[i]->translation_.y = 0;
+	}
 
 	//===================================================================
 }
