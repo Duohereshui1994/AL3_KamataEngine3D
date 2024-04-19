@@ -51,7 +51,7 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// デバッグカメラの生成
-	debugCamera_ = new DebugCamera(/*画面横幅*/ 1080, /*画面縦幅*/ 720);
+	debugCamera_ = new DebugCamera(/*画面横幅*/ WinApp::kWindowWidth, /*画面縦幅*/ WinApp::kWindowHeight);
 
 	// 軸方向を利用する
 	// 表示有効
