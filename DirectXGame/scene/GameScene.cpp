@@ -37,8 +37,9 @@ void GameScene::Initialize() {
 	//===================================================================
 
 	// デバッグカメラの生成	生成DebugCamera
-	// 
-	// debugCamera_ = new DebugCamera(/*画面横幅*/ 1080, /*画面縦幅*/ 720);
+	
+	//debugCamera_ = new DebugCamera(/*画面横幅*/ WinApp::kWindowWidth, /*画面縦幅*/ WinApp::kWindowHeight);
+
 	
 	// サウンドデータの読み込む	读取音频文件
 
