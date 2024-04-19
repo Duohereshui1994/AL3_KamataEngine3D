@@ -9,6 +9,9 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <vector>
+#include <cassert>
+
+
 
 
 /// <summary>

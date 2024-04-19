@@ -3,7 +3,7 @@
 #include "ImGuiManager.h"    //ImGuiを利用するため	想要使用ImGui必须导入
 #include "PrimitiveDrawer.h" //Lineを描画するため		想要画线必须导入
 #include "TextureManager.h"
-#include <cassert>
+
 
 // 构造函数
 GameScene::GameScene() {}

@@ -1,14 +1,13 @@
 #pragma once
 #include <math.h>
 #include <cmath>
-#include <assert.h>
-#include "Matrix4x4.h"
-#include "Vector3.h"
+#include <cassert>
+
 
 /// <summary>
 /// 加算
 /// </summary>
-Vector3 Add(const Vector3& v1, const Vector3& v2) {
+static Vector3 Add(const Vector3& v1, const Vector3& v2) {
 	Vector3 result = { 0,0,0 };
 	result.x = v1.x + v2.x;
 	result.y = v1.y + v2.y;
@@ -19,7 +18,7 @@ Vector3 Add(const Vector3& v1, const Vector3& v2) {
 /// <summary>
 /// 減算
 /// </summary>
-Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
+static Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
 	Vector3 result = { 0,0,0 };
 	result.x = v1.x - v2.x;
 	result.y = v1.y - v2.y;
@@ -30,7 +29,7 @@ Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
 /// <summary>
 /// スカラー倍
 /// </summary>
-Vector3 Multiply(float Scaler, const Vector3& v) {
+static Vector3 Multiply(float Scaler, const Vector3& v) {
 	Vector3 result = { 0,0,0 };
 	result.x = Scaler * v.x;
 	result.y = Scaler * v.y;
@@ -41,21 +40,21 @@ Vector3 Multiply(float Scaler, const Vector3& v) {
 /// <summary>
 /// 内積
 /// </summary>
-float Dot(const Vector3& v1, const Vector3& v2) {
+static float Dot(const Vector3& v1, const Vector3& v2) {
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
 /// <summary>
 /// 長さ
 /// </summary>
-float Length(const Vector3& v) {
+static float Length(const Vector3& v) {
 	return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
 /// <summary>
 /// 正規化
 /// </summary>
-Vector3 Normalize(const Vector3& v) {
+static Vector3 Normalize(const Vector3& v) {
 	float length = Length(v);
 	if (length != 0)
 	{
@@ -75,7 +74,7 @@ Vector3 Normalize(const Vector3& v) {
 /// <summary>
 /// 加算
 /// </summary>
-Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
+static Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result = {};
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
@@ -88,7 +87,7 @@ Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 /// <summary>
 /// 減算
 /// </summary>
-Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
+static Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result = {};
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
@@ -101,7 +100,7 @@ Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
 /// <summary>
 /// 乗算
 /// </summary>
-Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
+static Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result = {};
 
 	for (int i = 0; i < 4; i++) {
@@ -118,7 +117,7 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 /// <summary>
 /// 逆行列
 /// </summary>
-Matrix4x4 Inverse(const Matrix4x4& m) {
+static Matrix4x4 Inverse(const Matrix4x4& m) {
 	Matrix4x4 result = {};
 	float det;
 	int i, j;
@@ -255,7 +254,7 @@ Matrix4x4 Inverse(const Matrix4x4& m) {
 /// <summary>
 /// 転置行列
 /// </summary>
-Matrix4x4 Transpose(const Matrix4x4& m) {
+static Matrix4x4 Transpose(const Matrix4x4& m) {
 	Matrix4x4 result = {};
 	for (int i = 0; i < 4; i++)
 	{
@@ -270,7 +269,7 @@ Matrix4x4 Transpose(const Matrix4x4& m) {
 /// <summary>
 /// 単位行列の作成
 /// </summary>
-Matrix4x4 MakeIdentity4x4() {
+static Matrix4x4 MakeIdentity4x4() {
 	Matrix4x4 result = {};
 	for (int i = 0; i < 4; i++)
 	{
@@ -280,7 +279,7 @@ Matrix4x4 MakeIdentity4x4() {
 }
 
 
-Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
+static Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
 
 	Matrix4x4 result = {};
 
@@ -295,7 +294,7 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
 	return result;
 }
 
-Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
+static Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 
 	Matrix4x4 result = {};
 
@@ -307,7 +306,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	return result;
 }
 
-Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
+static Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 
 	Vector3 result = {};
 
@@ -324,7 +323,7 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	return result;
 }
 
-Matrix4x4 MakeRotateXMatrix(float radian) {
+static Matrix4x4 MakeRotateXMatrix(float radian) {
 	Matrix4x4 result = {};
 
 	result.m[0][0] = 1.0f;
@@ -337,7 +336,7 @@ Matrix4x4 MakeRotateXMatrix(float radian) {
 	return result;
 }
 
-Matrix4x4 MakeRotateYMatrix(float radian) {
+static Matrix4x4 MakeRotateYMatrix(float radian) {
 	Matrix4x4 result = {};
 
 
@@ -351,7 +350,7 @@ Matrix4x4 MakeRotateYMatrix(float radian) {
 	return result;
 }
 
-Matrix4x4 MakeRotateZMatrix(float radian) {
+static Matrix4x4 MakeRotateZMatrix(float radian) {
 	Matrix4x4 result = {};
 
 	result.m[0][0] = std::cos(radian);
@@ -363,47 +362,8 @@ Matrix4x4 MakeRotateZMatrix(float radian) {
 
 	return result;
 }
-//
-//Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
-//	Matrix4x4 scaleMatrix = {};
-//	scaleMatrix.m[0][0] = scale.x;
-//	scaleMatrix.m[1][1] = scale.y;
-//	scaleMatrix.m[2][2] = scale.z;
-//	scaleMatrix.m[3][3] = 1;
-//
-//	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
-//	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
-//	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
-//
-//	Matrix4x4 rotateMatrix = Multiply(Multiply(rotateXMatrix, rotateYMatrix), rotateZMatrix);
-//
-//	Matrix4x4 result = {};
-//
-//	result.m[0][0] = scaleMatrix.m[0][0] * rotateMatrix.m[0][0];
-//	result.m[0][1] = scaleMatrix.m[0][0] * rotateMatrix.m[0][1];
-//	result.m[0][2] = scaleMatrix.m[0][0] * rotateMatrix.m[0][2];
-//	result.m[0][3] = 0;
-//
-//	result.m[1][0] = scaleMatrix.m[1][1] * rotateMatrix.m[1][0];
-//	result.m[1][1] = scaleMatrix.m[1][1] * rotateMatrix.m[1][1];
-//	result.m[1][2] = scaleMatrix.m[1][1] * rotateMatrix.m[1][2];
-//	result.m[1][3] = 0;
-//
-//	result.m[2][0] = scaleMatrix.m[2][2] * rotateMatrix.m[2][0];
-//	result.m[2][1] = scaleMatrix.m[2][2] * rotateMatrix.m[2][1];
-//	result.m[2][2] = scaleMatrix.m[2][2] * rotateMatrix.m[2][2];
-//	result.m[2][3] = 0;
-//
-//	result.m[3][0] = translate.x;
-//	result.m[3][1] = translate.y;
-//	result.m[3][2] = translate.z;
-//	result.m[3][3] = 1;
-//
-//	return result;
-//}
 
-
-Matrix4x4 MakeAffineMatrix(Vector3& scale, Vector3& rotate, Vector3& translate) {
+static Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
 	Matrix4x4 scaleMatrix = {};
 	scaleMatrix.m[0][0] = scale.x;
 	scaleMatrix.m[1][1] = scale.y;
@@ -416,27 +376,8 @@ Matrix4x4 MakeAffineMatrix(Vector3& scale, Vector3& rotate, Vector3& translate) 
 
 	Matrix4x4 rotateMatrix = Multiply(Multiply(rotateXMatrix, rotateYMatrix), rotateZMatrix);
 
-	Matrix4x4 result = {};
+	return Multiply(Multiply(MakeScaleMatrix(scale), rotateMatrix), MakeTranslateMatrix(translate));
 
-	result.m[0][0] = scaleMatrix.m[0][0] * rotateMatrix.m[0][0];
-	result.m[0][1] = scaleMatrix.m[0][0] * rotateMatrix.m[0][1];
-	result.m[0][2] = scaleMatrix.m[0][0] * rotateMatrix.m[0][2];
-	result.m[0][3] = 0;
-
-	result.m[1][0] = scaleMatrix.m[1][1] * rotateMatrix.m[1][0];
-	result.m[1][1] = scaleMatrix.m[1][1] * rotateMatrix.m[1][1];
-	result.m[1][2] = scaleMatrix.m[1][1] * rotateMatrix.m[1][2];
-	result.m[1][3] = 0;
-
-	result.m[2][0] = scaleMatrix.m[2][2] * rotateMatrix.m[2][0];
-	result.m[2][1] = scaleMatrix.m[2][2] * rotateMatrix.m[2][1];
-	result.m[2][2] = scaleMatrix.m[2][2] * rotateMatrix.m[2][2];
-	result.m[2][3] = 0;
-
-	result.m[3][0] = translate.x;
-	result.m[3][1] = translate.y;
-	result.m[3][2] = translate.z;
-	result.m[3][3] = 1;
-
-	return result;
 }
+
+
