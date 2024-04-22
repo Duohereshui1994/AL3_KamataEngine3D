@@ -32,7 +32,7 @@ void GameScene::Initialize() {
 	soundDataHandle_ = audio_->LoadWave("fanfare.wav");
 
 	// 音声再生
-	//audio_->PlayWave(soundDataHandle_);
+	// audio_->PlayWave(soundDataHandle_);
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 
 	// ファイル名を指定してテクスチャを読み込む
@@ -86,7 +86,7 @@ void GameScene::Update() {
 			voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 		}
 	}
-
+#ifdef _DEBUG
 	// デバッグテキストの表示
 	ImGui::Begin("Debug1"); // Window作成
 	ImGui::Text("Kamata Taro %d,%d,%d", 2050, 12, 31);
@@ -96,6 +96,7 @@ void GameScene::Update() {
 
 	// Demo Window
 	ImGui::ShowDemoWindow();
+#endif
 
 	// デバッグカメラの更新
 	debugCamera_->Update();
