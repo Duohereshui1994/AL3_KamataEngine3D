@@ -4,7 +4,6 @@
 #include "PrimitiveDrawer.h" //Lineを描画するため		想要画线必须导入
 #include "TextureManager.h"
 
-
 // 构造函数
 GameScene::GameScene() {}
 
@@ -93,6 +92,20 @@ void GameScene::Initialize() {
 	const uint32_t kNumberBlockVertical = 10;
 	const float kBlockWidth = 2.0f;
 	const float kBlockHeight = 2.0f;
+
+	int map[kNumberBlockVertical][kNumberBlockHorizontal] = {
+        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+	    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+	    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+	    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+	    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+	};
+
 	worldTransformBlocks_.resize(kNumberBlockVertical);
 	for (uint32_t i = 0; i < kNumberBlockVertical; ++i) {
 		worldTransformBlocks_[i].resize(kNumberBlockHorizontal);
@@ -100,10 +113,12 @@ void GameScene::Initialize() {
 
 	for (uint32_t i = 0; i < kNumberBlockVertical; ++i) {
 		for (uint32_t j = 0; j < kNumberBlockHorizontal; ++j) {
-			worldTransformBlocks_[i][j] = new WorldTransform();
-			worldTransformBlocks_[i][j]->Initialize();
-			worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
-			worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
+			if (map[i][j] == 1) {
+				worldTransformBlocks_[i][j] = new WorldTransform();
+				worldTransformBlocks_[i][j]->Initialize();
+				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
+				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
+			}
 		}
 	}
 
@@ -147,7 +162,6 @@ void GameScene::Update() {
 	// デバッグカメラの更新	更新DebugCamera
 
 	// debugCamera_->Update();
-
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -197,9 +211,10 @@ void GameScene::Draw() {
 
 	// model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 
-
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+			if (!worldTransformBlock)
+				continue;
 			model_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
