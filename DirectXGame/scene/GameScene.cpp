@@ -84,12 +84,13 @@ void GameScene::Update() {
 
 	//===================================================================
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
 		isDebugCameraActive = !isDebugCameraActive;
 	}
-	ImGui::Text("isActive = %d", isDebugCameraActive);
-#endif 
+	ImGui::Text("Press Space To Change Camera");
+	ImGui::Text("isDebugCameraActive = %d", isDebugCameraActive);
+//#endif 
 
 	if (isDebugCameraActive == true) {
 		debugCamera_->Update();
