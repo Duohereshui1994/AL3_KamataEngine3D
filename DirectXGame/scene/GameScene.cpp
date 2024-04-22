@@ -39,7 +39,6 @@ void GameScene::Initialize() {
 
 	model_ = Model::Create();
 
-
 	viewProjection_.Initialize();
 
 	const uint32_t kNumberBlockHorizontal = 20;
@@ -84,13 +83,16 @@ void GameScene::Update() {
 
 	//===================================================================
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
 		isDebugCameraActive = !isDebugCameraActive;
 	}
+	ImGui::Begin("Debug1");
 	ImGui::Text("Press Space To Change Camera");
+
 	ImGui::Text("isDebugCameraActive = %d", isDebugCameraActive);
-//#endif 
+	ImGui::End();
+#endif // _DEBUG
 
 	if (isDebugCameraActive == true) {
 		debugCamera_->Update();
@@ -141,7 +143,6 @@ void GameScene::Draw() {
 
 	//===================================================================
 
-
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			if (!worldTransformBlock)
@@ -163,7 +164,6 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる		可以在这里追加前景精灵的描绘处理
 	/// </summary>
-
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
