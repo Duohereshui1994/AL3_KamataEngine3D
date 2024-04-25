@@ -45,6 +45,10 @@ void GameScene::Initialize() {
 
 	viewProjection_.Initialize();
 
+	_skydome = new Skydome();
+
+	_skydome->Initialize(_modelSkydemo, &viewProjection_);
+
 	const uint32_t kNumberBlockHorizontal = 20;
 	const uint32_t kNumberBlockVertical = 10;
 	const float kBlockWidth = 2.0f;
@@ -98,6 +102,8 @@ void GameScene::Update() {
 	ImGui::End();
 #endif // _DEBUG
 
+	_skydome->Update();
+
 	if (isDebugCameraActive == true) {
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
@@ -146,6 +152,8 @@ void GameScene::Draw() {
 	/// </summary>
 
 	//===================================================================
+
+	_skydome->Draw();
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {

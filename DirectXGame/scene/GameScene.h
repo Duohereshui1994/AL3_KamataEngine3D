@@ -10,6 +10,7 @@
 #include "WorldTransform.h"
 #include <vector>
 #include <cassert>
+#include "Skydome.h"
 
 
 
@@ -63,6 +64,8 @@ private: // メンバ変数	成员变量
 	ViewProjection viewProjection_;
 
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+
+	Skydome* _skydome = nullptr;
 
 
 	//===================================================================
