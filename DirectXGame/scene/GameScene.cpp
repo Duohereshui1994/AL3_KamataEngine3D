@@ -13,6 +13,8 @@ GameScene::~GameScene() {
 
 	delete model_;
 
+	delete _modelSkydemo;
+
 	delete debugCamera_;
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
@@ -38,6 +40,8 @@ void GameScene::Initialize() {
 	debugCamera_ = new DebugCamera(/*画面横幅*/ WinApp::kWindowWidth, /*画面縦幅*/ WinApp::kWindowHeight);
 
 	model_ = Model::Create();
+
+	_modelSkydemo = Model::CreateFromOBJ("skydome", true);
 
 	viewProjection_.Initialize();
 

@@ -58,7 +58,9 @@ private: // メンバ変数	成员变量
 
 	Model* model_ = nullptr;
 
-	 ViewProjection viewProjection_;
+	Model* _modelSkydemo = nullptr;
+
+	ViewProjection viewProjection_;
 
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
