@@ -41,7 +41,7 @@ void GameScene::Initialize() {
 
 	model_ = Model::Create();
 
-	_modelSkydemo = Model::CreateFromOBJ("skydome", true);
+	_modelSkydemo = Model::CreateFromOBJ("skydome", true);	//天球モデル
 
 	viewProjection_.Initialize();
 

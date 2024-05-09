@@ -2,6 +2,9 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include <cassert>
+/// <summary>
+/// 天球
+/// </summary>
 class Skydome {
 public:
 	void Initialize(Model* model, ViewProjection* viewProjection);
