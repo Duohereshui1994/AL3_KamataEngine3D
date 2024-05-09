@@ -364,11 +364,6 @@ static Matrix4x4 MakeRotateZMatrix(float radian) {
 }
 
 static Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
-	Matrix4x4 scaleMatrix = {};
-	scaleMatrix.m[0][0] = scale.x;
-	scaleMatrix.m[1][1] = scale.y;
-	scaleMatrix.m[2][2] = scale.z;
-	scaleMatrix.m[3][3] = 1;
 
 	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
 	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
