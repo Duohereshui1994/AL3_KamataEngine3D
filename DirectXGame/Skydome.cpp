@@ -5,7 +5,7 @@ void Skydome::Initialize(Model* model, ViewProjection* viewProjection) {
 	_model = model;
 	_worldTransform.Initialize();
 	_viewProjection = viewProjection;
-	_worldTransform.scale_ = {150.0f, 150.0f, 150.0f};
+	_worldTransform.scale_ = {100.0f, 100.0f, 100.0f};
 }
 
 void Skydome::Update() { _worldTransform.UpdateMatrix(); }
