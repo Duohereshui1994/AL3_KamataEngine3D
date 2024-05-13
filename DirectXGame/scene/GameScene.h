@@ -11,6 +11,7 @@
 #include <vector>
 #include <cassert>
 #include "Skydome.h"
+#include "MapChipField.h"
 
 
 
@@ -65,8 +66,15 @@ private: // メンバ変数	成员变量
 
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
+	//天球
 	Skydome* _skydome = nullptr;
+	//MapChip
+	MapChipField* _mapChipField = nullptr;
 
+	/// <summary>
+	/// create blocks
+	/// </summary>
+	void GenerateBlocks();
 
 	//===================================================================
 

@@ -23,6 +23,8 @@ GameScene::~GameScene() {
 		}
 	}
 	worldTransformBlocks_.clear();
+
+	delete _mapChipField;
 	//===================================================================
 }
 
@@ -41,7 +43,7 @@ void GameScene::Initialize() {
 
 	model_ = Model::Create();
 
-	_modelSkydemo = Model::CreateFromOBJ("skydome", true);	//天球モデル
+	_modelSkydemo = Model::CreateFromOBJ("skydome", true); // 天球モデル
 
 	viewProjection_.Initialize();
 
@@ -49,7 +51,12 @@ void GameScene::Initialize() {
 
 	_skydome->Initialize(_modelSkydemo, &viewProjection_);
 
-	const uint32_t kNumberBlockHorizontal = 20;
+	_mapChipField = new MapChipField();
+	_mapChipField->LoadMapChipCsv("Resources/block.csv");
+
+	GenerateBlocks();
+
+	/*const uint32_t kNumberBlockHorizontal = 20;
 	const uint32_t kNumberBlockVertical = 10;
 	const float kBlockWidth = 2.0f;
 	const float kBlockHeight = 2.0f;
@@ -81,7 +88,7 @@ void GameScene::Initialize() {
 				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
 			}
 		}
-	}
+	}*/
 
 	//===================================================================
 }
@@ -181,4 +188,25 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::GenerateBlocks() {
+	uint32_t numBlockVirtical = _mapChipField->GetNumBlockVirtical();
+	uint32_t numBlockHorizontal = _mapChipField->GetNumBlockHorizontal();
+
+	worldTransformBlocks_.resize(numBlockVirtical);
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		worldTransformBlocks_[i].resize(numBlockHorizontal);
+	}
+
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
+			if (_mapChipField->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				worldTransformBlocks_[i][j] = worldTransform;
+				worldTransformBlocks_[i][j]->translation_ = _mapChipField->GetMapChipPositionByIndex(j, i);
+			}
+		}
+	}
 }
