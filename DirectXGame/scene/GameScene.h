@@ -12,6 +12,7 @@
 #include <cassert>
 #include "Skydome.h"
 #include "MapChipField.h"
+#include "Player.h"
 
 
 
@@ -62,14 +63,20 @@ private: // メンバ変数	成员变量
 
 	Model* _modelSkydemo = nullptr;
 
+	Model* _modelPlayerOBJ = nullptr;
+
 	ViewProjection viewProjection_;
 
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
 	//天球
 	Skydome* _skydome = nullptr;
+
 	//MapChip
 	MapChipField* _mapChipField = nullptr;
+
+	//player
+	Player* _player = nullptr;
 
 	/// <summary>
 	/// create blocks

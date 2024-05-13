@@ -15,6 +15,8 @@ GameScene::~GameScene() {
 
 	delete _modelSkydemo;
 
+	delete _modelPlayerOBJ;
+
 	delete debugCamera_;
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
@@ -45,6 +47,8 @@ void GameScene::Initialize() {
 
 	_modelSkydemo = Model::CreateFromOBJ("skydome", true); // 天球モデル
 
+	_modelPlayerOBJ = Model::CreateFromOBJ("playerOBJ", true); // player model
+
 	viewProjection_.Initialize();
 
 	_skydome = new Skydome();
@@ -54,41 +58,13 @@ void GameScene::Initialize() {
 	_mapChipField = new MapChipField();
 	_mapChipField->LoadMapChipCsv("Resources/block.csv");
 
+	_player = new Player();
+
+	Vector3 playerPosition = _mapChipField->GetMapChipPositionByIndex(1, 18);
+
+	_player->Initialize(_modelPlayerOBJ, &viewProjection_, playerPosition);
+
 	GenerateBlocks();
-
-	/*const uint32_t kNumberBlockHorizontal = 20;
-	const uint32_t kNumberBlockVertical = 10;
-	const float kBlockWidth = 2.0f;
-	const float kBlockHeight = 2.0f;
-
-	int map[kNumberBlockVertical][kNumberBlockHorizontal] = {
-	    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-	    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-	    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-	    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-	};
-
-	worldTransformBlocks_.resize(kNumberBlockVertical);
-	for (uint32_t i = 0; i < kNumberBlockVertical; ++i) {
-		worldTransformBlocks_[i].resize(kNumberBlockHorizontal);
-	}
-
-	for (uint32_t i = 0; i < kNumberBlockVertical; ++i) {
-		for (uint32_t j = 0; j < kNumberBlockHorizontal; ++j) {
-			if (map[i][j] == 1) {
-				worldTransformBlocks_[i][j] = new WorldTransform();
-				worldTransformBlocks_[i][j]->Initialize();
-				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
-				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
-			}
-		}
-	}*/
 
 	//===================================================================
 }
@@ -127,6 +103,8 @@ void GameScene::Update() {
 			worldTransformBlock->UpdateMatrix();
 		}
 	}
+
+	_player->Update();
 	//===================================================================
 }
 
@@ -169,6 +147,8 @@ void GameScene::Draw() {
 			model_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
+
+	_player->Draw();
 	//===================================================================
 
 	// 3Dオブジェクト描画後処理

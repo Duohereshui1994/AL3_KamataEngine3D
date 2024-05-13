@@ -5,7 +5,7 @@ void Skydome::Initialize(Model* model, ViewProjection* viewProjection) {
 	_model = model;
 	_worldTransform.Initialize();
 	_viewProjection = viewProjection;
-	_worldTransform.scale_ = {500.0f, 500.0f, 500.0f};	//天球の大きさを設定　元のサイズは1、今回は100倍に
+	_worldTransform.scale_ = {500.0f, 500.0f, 500.0f};	//天球の大きさを設定　元のサイズは1、今回は500倍に
 }
 
 void Skydome::Update() { _worldTransform.UpdateMatrix(); }	//自作関数で天球の位置を更新
