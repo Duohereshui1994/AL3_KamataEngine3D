@@ -5,7 +5,13 @@
 class Player {
 private:
 	Vector3 _velocity = {};
-	float kAcceleration = 0.01f;
+
+	//加速度
+	static inline const float kAcceleration = 0.01f;
+	//速度衰减系数
+	static inline const float kAttenuation = 0.05f;
+	//最大速度
+	static inline const float kLimitRunSpeed = 0.5f;
 
 public:
 	Player();
