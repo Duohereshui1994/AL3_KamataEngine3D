@@ -44,6 +44,7 @@ void GameScene::Initialize() {
 	_modelSkydemo = Model::CreateFromOBJ("skydome", true);	//天球モデル
 
 	viewProjection_.Initialize();
+	viewProjection_.farZ = 2000.0f;
 
 	_skydome = new Skydome();
 
@@ -108,6 +109,7 @@ void GameScene::Update() {
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		debugCamera_->SetFarZ(viewProjection_.farZ);
 		viewProjection_.TransferMatrix();
 	} else {
 		viewProjection_.UpdateMatrix();
