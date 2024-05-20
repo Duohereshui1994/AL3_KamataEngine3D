@@ -17,26 +17,89 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 }
 
 void Player::Update() {
-	if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
-		Vector3 acceleration = {};
-		if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
-			if (_velocity.x < 0.0f) {
-				_velocity.x *= (1.0f - kAttenuation);
-			}
-			acceleration.x += kAcceleration;
-		} else if (Input::GetInstance()->PushKey(DIK_LEFT)) {
-			if (_velocity.x > 0.0f) {
-				_velocity.x *= (1.0f - kAttenuation);
-			}
-			acceleration.x -= kAcceleration;
+	// 着陆flag
+	bool landing = false;
+	// 落地判定
+	if (velocity_.y < 0.0f) {
+		if (worldTransform_.translation_.y <= 2.0f) {//我的mapchip size好像是2
+			landing = true;
 		}
-		_velocity = Add(_velocity, acceleration);
-		_velocity.x = std::clamp(_velocity.x, -kLimitRunSpeed, kLimitRunSpeed);
-	} // 非按键时速度衰减
-	else {
-		_velocity.x *= (1.0f - kAttenuation);
 	}
-	worldTransform_.translation_ = Add(worldTransform_.translation_, _velocity);
+	// 左右移动
+	// 接地
+	if (onGround_) {
+		if (velocity_.y > 0.0f) {
+			onGround_ = false;
+		}
+		if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
+			Vector3 acceleration = {};
+			if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
+				// 旋转
+				if (lrDirection_ != LRDirection::kRight) {
+					lrDirection_ = LRDirection::kRight;
+					turnFirstRotation_ = std::numbers::pi_v<float>;
+					turnTimer_ = 1.0f;
+				}
+				// 减速
+				if (velocity_.x < 0.0f) {
+					velocity_.x *= (1.0f - kAttenuation);
+				}
+				acceleration.x += kAcceleration;
+			} else if (Input::GetInstance()->PushKey(DIK_LEFT)) {
+				// 旋转
+				if (lrDirection_ != LRDirection::kLeft) {
+					lrDirection_ = LRDirection::kLeft;
+					turnFirstRotation_ = 0.0f;
+					turnTimer_ = 1.0f;
+				}
+				// 减速
+				if (velocity_.x > 0.0f) {
+					velocity_.x *= (1.0f - kAttenuation);
+				}
+				acceleration.x -= kAcceleration;
+			}
+			velocity_ = Add(velocity_, acceleration);
+			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
+		} // 非按键时速度衰减
+		else {
+			velocity_.x *= (1.0f - kAttenuation);
+		}
+
+		// 跳跃
+		if (Input::GetInstance()->PushKey(DIK_UP)) {
+			velocity_ = Add(velocity_, {0.0f, kJumpAcceleration, 0.0f});
+		}
+
+	} 
+	// 不在地面
+	else {
+		velocity_ = Add(velocity_, {0.0f, -kGravityAcceleration, 0.0f});
+		velocity_.y = std::clamp(velocity_.y, -kLimitFallSpeed, 0.0f);
+		if (landing) {
+			worldTransform_.translation_.y = 2.0f;//我的mapchip size好像是2
+			velocity_.x *= (1.0f - kAttenuation);
+			velocity_.y = 0.0f;
+			onGround_ = true;
+		}
+	}
+
+	// 旋回制御
+	// 因为我自己的模型的原因 所以旋转角这样设置
+	if (turnTimer_ > 0.0f) {
+		turnTimer_ = std::clamp(turnTimer_ - 1 / 30.0f, 0.0f, turnTimer_);
+		float destinationRotationYTable[] = {
+		    0, std::numbers::pi_v<float>,
+		    // std::numbers::pi_v<float> / 2.0f,
+		    // std::numbers::pi_v<float> * 3.0f / 2.0f,
+		};
+		// 状態に応じた角度を取得する
+		float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
+
+		// worldTransform_.rotation_.y = destinationRotationY;
+		worldTransform_.rotation_.y = std::lerp(destinationRotationY, turnFirstRotation_, turnTimer_);
+	}
+
+	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
 	worldTransform_.UpdateMatrix();
 }
 
