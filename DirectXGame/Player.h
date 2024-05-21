@@ -1,4 +1,5 @@
 #pragma once
+#define NOMINMAX
 #include "Model.h"
 #include "WorldTransform.h"
 #include "Input.h"
@@ -36,7 +37,8 @@ private:
 	//最大落下速度
 	static inline const float kLimitFallSpeed = 0.5f;
 	//跳跃初速度（上）
-	static inline const float kJumpAcceleration = 2.0f;
+	static inline const float kJumpAcceleration = 0.15f;//方法1 std::max 的对应参数
+	//static inline const float kJumpAcceleration = 2.0f;//方法2 std::clamp 的对应参数
 
 	WorldTransform worldTransform_;
 	ViewProjection* viewProjection_ = nullptr;

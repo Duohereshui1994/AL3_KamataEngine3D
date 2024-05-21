@@ -74,7 +74,8 @@ void Player::Update() {
 	// 不在地面
 	else {
 		velocity_ = Add(velocity_, {0.0f, -kGravityAcceleration, 0.0f});
-		velocity_.y = std::clamp(velocity_.y, -kLimitFallSpeed, 0.0f);
+		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);		//方法1
+		//velocity_.y = std::clamp(velocity_.y, -kLimitFallSpeed, 0.0f);	//方法2
 		if (landing) {
 			worldTransform_.translation_.y = 2.0f;//我的mapchip size好像是2
 			velocity_.x *= (1.0f - kAttenuation);
