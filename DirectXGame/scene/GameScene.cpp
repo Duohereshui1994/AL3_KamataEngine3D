@@ -27,6 +27,8 @@ GameScene::~GameScene() {
 	worldTransformBlocks_.clear();
 
 	delete _mapChipField;
+
+	delete _cameraController;
 	//===================================================================
 }
 
@@ -65,6 +67,8 @@ void GameScene::Initialize() {
 	_player->Initialize(_modelPlayerOBJ, &viewProjection_, playerPosition);
 
 	GenerateBlocks();
+
+	_cameraController = new CameraController();
 
 	//===================================================================
 }

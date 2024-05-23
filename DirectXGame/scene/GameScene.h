@@ -13,6 +13,7 @@
 #include "Skydome.h"
 #include "MapChipField.h"
 #include "Player.h"
+#include "CameraController.h"
 
 
 
@@ -77,6 +78,9 @@ private: // メンバ変数	成员变量
 
 	//player
 	Player* _player = nullptr;
+
+	//追踪camera
+	CameraController* _cameraController = nullptr;
 
 	/// <summary>
 	/// create blocks

@@ -61,4 +61,6 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	WorldTransform GetWorldTransform();
 };
