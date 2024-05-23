@@ -69,6 +69,9 @@ void GameScene::Initialize() {
 	GenerateBlocks();
 
 	_cameraController = new CameraController();
+	_cameraController->Initalize(&viewProjection_);
+	_cameraController->SetTarget(_player);
+	_cameraController->Reset();
 
 	//===================================================================
 }
@@ -109,6 +112,8 @@ void GameScene::Update() {
 	}
 
 	_player->Update();
+
+	_cameraController->Update();
 	//===================================================================
 }
 
