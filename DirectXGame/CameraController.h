@@ -23,5 +23,5 @@ public:
 private:
 	ViewProjection* viewProjection_ = nullptr;
 	Player* target_ = nullptr;
-	Vector3 targetOffset_ = {0.0f, 0.0f, -15.0f}
+	Vector3 targetOffset_ = {0.0f, 0.0f, -15.0f};
 };
