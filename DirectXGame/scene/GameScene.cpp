@@ -70,6 +70,24 @@ void GameScene::Initialize() {
 
 	_cameraController = new CameraController();
 	_cameraController->Initalize(&viewProjection_);
+
+	//====================================================
+	// 设置相机的可移动区域
+	CameraController::Rect cameraArea;
+	//cameraArea.left = 10.0f;
+	//cameraArea.right = 188.0f;
+	//cameraArea.bottom = 5.0f;
+	//cameraArea.top = 100.0f;
+
+	cameraArea.left = 0.0f;
+	cameraArea.right = 200.0f;
+	cameraArea.bottom = 5.0f;
+	cameraArea.top = 100.0f;
+
+	// 设置相机的可移动区域
+	_cameraController->SetMoveableArea(cameraArea);
+	//====================================================
+
 	_cameraController->SetTarget(_player);
 	_cameraController->Reset();
 
@@ -87,8 +105,8 @@ void GameScene::Update() {
 	}
 	ImGui::Begin("Debug1");
 	ImGui::Text("Press Space To Change Camera");
-
 	ImGui::Text("isDebugCameraActive = %d", isDebugCameraActive);
+
 	ImGui::End();
 #endif // _DEBUG
 

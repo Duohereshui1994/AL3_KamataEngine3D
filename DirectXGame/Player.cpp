@@ -101,6 +101,14 @@ void Player::Update() {
 	}
 
 	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
+
+	//====================================================================
+	//因为目前没有atari判定。所以暂时加一个移动限制，来看追踪目标在画面内的补正 后续有判定后删除
+	if (worldTransform_.translation_.x > 52) {
+		worldTransform_.translation_.x = 52;
+	}
+	//====================================================================
+
 	worldTransform_.UpdateMatrix();
 }
 

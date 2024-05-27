@@ -62,5 +62,15 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 获得玩家的速度
+	/// </summary>
+	/// <returns></returns>
+	const Vector3& GetVelocity() { return velocity_; }
+
+	/// <summary>
+	/// 获得玩家的世界变换
+	/// </summary>
+	/// <returns></returns>
 	WorldTransform& GetWorldTransform();
 };
