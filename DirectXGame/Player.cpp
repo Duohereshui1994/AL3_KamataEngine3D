@@ -106,4 +106,4 @@ void Player::Update() {
 
 void Player::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
 
-WorldTransform Player::GetWorldTransform() { return WorldTransform(); }
+WorldTransform& Player::GetWorldTransform() { return worldTransform_; }

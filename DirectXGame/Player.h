@@ -62,5 +62,5 @@ public:
 	/// </summary>
 	void Draw();
 
-	WorldTransform GetWorldTransform();
+	WorldTransform& GetWorldTransform();
 };
