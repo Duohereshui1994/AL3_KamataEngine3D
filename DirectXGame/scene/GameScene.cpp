@@ -66,6 +66,8 @@ void GameScene::Initialize() {
 
 	_player->Initialize(_modelPlayerOBJ, &viewProjection_, playerPosition);
 
+	_player->SetMapChipField(_mapChipField);
+
 	GenerateBlocks();
 
 	_cameraController = new CameraController();
