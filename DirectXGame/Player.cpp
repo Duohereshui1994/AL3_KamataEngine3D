@@ -18,6 +18,31 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 }
 
 void Player::Update() {
+
+	//move
+	Move();
+	// 旋回制御
+	// 因为我自己的模型的原因 所以旋转角这样设置
+	ConvolutionalControl();
+
+	CollisionMapInfo collisionMapInfo;
+	collisionMapInfo.move = velocity_;
+
+	isMapChipCollision(collisionMapInfo);
+
+	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
+
+	//====================================================================
+	// 因为目前没有atari判定。所以暂时加一个移动限制，来看追踪目标在画面内的补正 后续有判定后删除
+	if (worldTransform_.translation_.x > 52) {
+		worldTransform_.translation_.x = 52;
+	}
+	//====================================================================
+
+	worldTransform_.UpdateMatrix();
+}
+
+void Player::Move() {
 	// 着陆flag
 	bool landing = false;
 	// 落地判定
@@ -30,14 +55,44 @@ void Player::Update() {
 		}
 
 		// 移动
-		PlayerMove();
-
-		CollisionMapInfo collisionMapInfo;
-		collisionMapInfo.move = velocity_;
-		isMapChipCollision(collisionMapInfo);
-
+		if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
+			Vector3 acceleration = {};
+			if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
+				// 旋转
+				if (lrDirection_ != LRDirection::kRight) {
+					lrDirection_ = LRDirection::kRight;
+					turnFirstRotation_ = std::numbers::pi_v<float>;
+					turnTimer_ = 1.0f;
+				}
+				// 减速
+				if (velocity_.x < 0.0f) {
+					velocity_.x *= (1.0f - kAttenuation);
+				}
+				acceleration.x += kAcceleration;
+			} else if (Input::GetInstance()->PushKey(DIK_LEFT)) {
+				// 旋转
+				if (lrDirection_ != LRDirection::kLeft) {
+					lrDirection_ = LRDirection::kLeft;
+					turnFirstRotation_ = 0.0f;
+					turnTimer_ = 1.0f;
+				}
+				// 减速
+				if (velocity_.x > 0.0f) {
+					velocity_.x *= (1.0f - kAttenuation);
+				}
+				acceleration.x -= kAcceleration;
+			}
+			velocity_ = Add(velocity_, acceleration);
+			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
+		} // 非按键时速度衰减
+		else {
+			velocity_.x *= (1.0f - kAttenuation);
+		}
 		// 跳跃
-		PlayerJump();
+		if (Input::GetInstance()->PushKey(DIK_UP)) {
+			velocity_ = Add(velocity_, {0.0f, kJumpAcceleration, 0.0f});
+			onGround_ = false;
+		}
 
 	}
 	// 不在地面
@@ -52,21 +107,6 @@ void Player::Update() {
 			onGround_ = true;
 		}
 	}
-
-	// 旋回制御
-	// 因为我自己的模型的原因 所以旋转角这样设置
-	ConvolutionalControl();
-
-	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
-
-	//====================================================================
-	// 因为目前没有atari判定。所以暂时加一个移动限制，来看追踪目标在画面内的补正 后续有判定后删除
-	if (worldTransform_.translation_.x > 52) {
-		worldTransform_.translation_.x = 52;
-	}
-	//====================================================================
-
-	worldTransform_.UpdateMatrix();
 }
 
 /// <summary>
@@ -80,58 +120,12 @@ void Player::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
 /// <returns></returns>
 WorldTransform& Player::GetWorldTransform() { return worldTransform_; }
 
-/// <summary>
-/// map冲突判定
-/// </summary>
-/// <param name="info"></param>
-void Player::isMapChipCollision(CollisionMapInfo& info) {
-	isMapChipUPCollision(info);
-	isMapChipDownCollision(info);
-	isMapChipRightCollision(info);
-	isMapChipLeftCollision(info);
-}
 
-void Player::isMapChipUPCollision(CollisionMapInfo& info) {
-	// 上升？
-	if (info.move.y <= 0) {
-		return;
-	}
-
-	// 移动后四角坐标计算
-	std::array<Vector3, kNumCorners> positionsNew;
-	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
-		positionsNew[i] = CornerPosition(Add(worldTransform_.translation_, info.move), static_cast<Corner>(i));
-	}
-
-	MapChipType mapChipType;
-	bool hit = false;
-	// 左上
-	MapChipField::IndexSet indexSet;
-	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
-	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
-	if (mapChipType == MapChipType::kBlock) {
-		hit = true;
-	}
-	// 右上
-	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
-	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
-	if (mapChipType == MapChipType::kBlock) {
-		hit = true;
-	}
-
-	if (hit) {
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition(Add(worldTransform_.translation_, info.move));
-		MapChipField::Rect rect = mapChipField_->GetRectByIndexSet(indexSet.xIndex, indexSet.yIndex);
-		info.move.y = std::max(0.0f, info.move.y);
-		info.ceiling = true;
-	}
-}
-
-void Player::isMapChipDownCollision(CollisionMapInfo& info) {}
-
-void Player::isMapChipRightCollision(CollisionMapInfo& info) {}
-
-void Player::isMapChipLeftCollision(CollisionMapInfo& info) {}
+//void Player::isMapChipDownCollision(CollisionMapInfo& info) {}
+//
+//void Player::isMapChipRightCollision(CollisionMapInfo& info) {}
+//
+//void Player::isMapChipLeftCollision(CollisionMapInfo& info) {}
 
 /// <summary>
 /// 落地判定
@@ -164,53 +158,7 @@ void Player::ConvolutionalControl() {
 	}
 }
 
-/// <summary>
-/// 玩家跳跃
-/// </summary>
-void Player::PlayerJump() {
-	if (Input::GetInstance()->PushKey(DIK_UP)) {
-		velocity_ = Add(velocity_, {0.0f, kJumpAcceleration, 0.0f});
-	}
-}
 
-/// <summary>
-/// 玩家移动
-/// </summary>
-void Player::PlayerMove() {
-	if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
-		Vector3 acceleration = {};
-		if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
-			// 旋转
-			if (lrDirection_ != LRDirection::kRight) {
-				lrDirection_ = LRDirection::kRight;
-				turnFirstRotation_ = std::numbers::pi_v<float>;
-				turnTimer_ = 1.0f;
-			}
-			// 减速
-			if (velocity_.x < 0.0f) {
-				velocity_.x *= (1.0f - kAttenuation);
-			}
-			acceleration.x += kAcceleration;
-		} else if (Input::GetInstance()->PushKey(DIK_LEFT)) {
-			// 旋转
-			if (lrDirection_ != LRDirection::kLeft) {
-				lrDirection_ = LRDirection::kLeft;
-				turnFirstRotation_ = 0.0f;
-				turnTimer_ = 1.0f;
-			}
-			// 减速
-			if (velocity_.x > 0.0f) {
-				velocity_.x *= (1.0f - kAttenuation);
-			}
-			acceleration.x -= kAcceleration;
-		}
-		velocity_ = Add(velocity_, acceleration);
-		velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
-	} // 非按键时速度衰减
-	else {
-		velocity_.x *= (1.0f - kAttenuation);
-	}
-}
 
 /// <summary>
 /// 获得角点位置
@@ -227,4 +175,71 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	};
 
 	return Add(center, offsetTable[static_cast<uint32_t>(corner)]);
+}
+
+/// <summary>
+/// map冲突判定
+/// </summary>
+/// <param name="info"></param>
+void Player::isMapChipCollision(CollisionMapInfo& info) {
+	isMapChipUPCollision(info);
+	/*isMapChipDownCollision(info);
+	isMapChipRightCollision(info);
+	isMapChipLeftCollision(info);*/
+}
+
+void Player::isMapChipUPCollision(CollisionMapInfo& info) {
+
+	// 移动后四角坐标计算
+	std::array<Vector3, kNumCorners> positionsNew;
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(Add(worldTransform_.translation_, info.move), static_cast<Corner>(i));
+	}
+
+	// 上升？
+	if (info.move.y <= 0) {
+		return;
+	}
+
+	MapChipType mapChipType;
+	bool hit = false;
+	MapChipField::IndexSet indexSet;
+
+	// 左上
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+	// 右上
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	if (hit) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(Add(worldTransform_.translation_, info.move));
+		MapChipField::Rect rect = mapChipField_->GetRectByIndexSet(indexSet.xIndex, indexSet.yIndex);
+		info.move.y = std::max(0.0f, info.move.y);
+		info.ceiling = true;
+	}
+
+	collisionResult(info);
+
+	CeilingCollision(info);
+}
+
+// void Player::isMapChipDownCollision(CollisionMapInfo& info) {}
+//
+// void Player::isMapChipRightCollision(CollisionMapInfo& info) {}
+//
+// void Player::isMapChipLeftCollision(CollisionMapInfo& info) {}
+
+void Player::collisionResult(CollisionMapInfo& info) { worldTransform_.translation_ = Add(worldTransform_.translation_, info.move); }
+
+void Player::CeilingCollision(Player::CollisionMapInfo& info) {
+	if (info.ceiling) {
+		velocity_.y = 0.0f;
+	}
 }

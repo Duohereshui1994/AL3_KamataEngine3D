@@ -11,7 +11,7 @@ std::map<std::string, MapChipType> mapChipTable = {
 
 void MapChipField::ResetMapChipData() {
 	_mapChipData.data.clear();
-	_mapChipData.data.resize(kNumBlockVirtical);
+	_mapChipData.data.resize(kNumBlockVertical);
 	for (std::vector<MapChipType>& mapChipDataLine : _mapChipData.data) {
 		mapChipDataLine.resize(kNumBlockHorizontal);
 	}
@@ -36,7 +36,7 @@ void MapChipField::LoadMapChipCsv(const std::string& filePath) {
 	file.close();
 
 	// load MapChipDate from CSV
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+	for (uint32_t i = 0; i < kNumBlockVertical; ++i) {
 		std::string line;
 		getline(mapChipCsv, line);
 
@@ -57,22 +57,23 @@ MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex
 	if (xIndex < 0 || kNumBlockHorizontal - 1 < xIndex) {
 		return MapChipType::kBlank;
 	}
-	if (yIndex < 0 || kNumBlockVirtical - 1 < yIndex) {
+	if (yIndex < 0 || kNumBlockVertical - 1 < yIndex) {
 		return MapChipType::kBlank;
 	}
 	return _mapChipData.data[yIndex][xIndex];
 }
 
-Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumBlockVirtical - 1 - yIndex), 0); }
+Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) { return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumBlockVertical - 1 - yIndex), 0); }
 
-uint32_t MapChipField::GetNumBlockVirtical() { return kNumBlockVirtical; }
+uint32_t MapChipField::GetNumBlockVirtical() { return kNumBlockVertical; }
 
 uint32_t MapChipField::GetNumBlockHorizontal() { return kNumBlockHorizontal; }
 
 MapChipField::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
 	IndexSet indexSet = {};
-	indexSet.xIndex = static_cast<uint32_t>(kNumBlockHorizontal - 1 - (position.x + kBlockWidth / 2) / kBlockWidth);
-	indexSet.yIndex = static_cast<uint32_t>(kNumBlockVirtical - 1 - (position.y + kBlockHeight / 2) / kBlockHeight);
+	indexSet.xIndex = static_cast<uint32_t>((position.x + kBlockWidth / 2) / kBlockWidth);
+	indexSet.yIndex = static_cast<uint32_t>(kNumBlockVertical - ((position.y + kBlockHeight / 2) / kBlockHeight));
+
 	return indexSet;
 }
 
