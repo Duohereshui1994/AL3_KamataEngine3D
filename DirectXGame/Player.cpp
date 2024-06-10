@@ -1,7 +1,5 @@
 #include "Player.h"
-#include <algorithm>
-#include <cassert>
-#include <numbers>
+
 
 Player::Player() {}
 
@@ -19,7 +17,7 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 
 void Player::Update() {
 
-	//move
+	// move
 	Move();
 	// 旋回制御
 	// 因为我自己的模型的原因 所以旋转角这样设置
@@ -120,12 +118,11 @@ void Player::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
 /// <returns></returns>
 WorldTransform& Player::GetWorldTransform() { return worldTransform_; }
 
-
-//void Player::isMapChipDownCollision(CollisionMapInfo& info) {}
+// void Player::isMapChipDownCollision(CollisionMapInfo& info) {}
 //
-//void Player::isMapChipRightCollision(CollisionMapInfo& info) {}
+// void Player::isMapChipRightCollision(CollisionMapInfo& info) {}
 //
-//void Player::isMapChipLeftCollision(CollisionMapInfo& info) {}
+// void Player::isMapChipLeftCollision(CollisionMapInfo& info) {}
 
 /// <summary>
 /// 落地判定
@@ -158,8 +155,6 @@ void Player::ConvolutionalControl() {
 	}
 }
 
-
-
 /// <summary>
 /// 获得角点位置
 /// </summary>
@@ -183,20 +178,20 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 /// <param name="info"></param>
 void Player::isMapChipCollision(CollisionMapInfo& info) {
 	isMapChipUPCollision(info);
-	/*isMapChipDownCollision(info);
-	isMapChipRightCollision(info);
+	isMapChipDownCollision(info);
+	/*isMapChipRightCollision(info);
 	isMapChipLeftCollision(info);*/
 }
 
 void Player::isMapChipUPCollision(CollisionMapInfo& info) {
 
 	// 移动后四角坐标计算
-	std::array<Vector3, kNumCorners> positionsNew;
+	std::array<Vector3, static_cast<uint32_t>(Corner::kNumCorners)> positionsNew;
 	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
 		positionsNew[i] = CornerPosition(Add(worldTransform_.translation_, info.move), static_cast<Corner>(i));
 	}
 
-	// 上升？
+	// 上升？ 早期return
 	if (info.move.y <= 0) {
 		return;
 	}
@@ -230,10 +225,46 @@ void Player::isMapChipUPCollision(CollisionMapInfo& info) {
 	CeilingCollision(info);
 }
 
-// void Player::isMapChipDownCollision(CollisionMapInfo& info) {}
-//
+void Player::isMapChipDownCollision(CollisionMapInfo& info) {
+	// 移动后四角坐标计算
+	std::array<Vector3, static_cast<uint32_t>(Corner::kNumCorners)> positionsNew;
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(Add(worldTransform_.translation_, info.move), static_cast<Corner>(i));
+	}
+
+	// 下降？
+	if (info.move.y >= 0) {
+		return;
+	}
+
+	MapChipType mapChipType;
+	bool hit = false;
+	MapChipField::IndexSet indexSet;
+
+	// 左下
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+	// 右下
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	//==================================这里不对劲 Y移动量 还有移动后自character的下端=======================
+	if (hit) {
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + info.move);
+		MapChipField::Rect rect = mapChipField_->GetRectByIndexSet(indexSet.xIndex, indexSet.yIndex);
+		info.move.y = std::min(0.0f, info.move.y);
+		info.landing = true;
+	}
+}
+
 // void Player::isMapChipRightCollision(CollisionMapInfo& info) {}
-//
+
 // void Player::isMapChipLeftCollision(CollisionMapInfo& info) {}
 
 void Player::collisionResult(CollisionMapInfo& info) { worldTransform_.translation_ = Add(worldTransform_.translation_, info.move); }
@@ -241,5 +272,51 @@ void Player::collisionResult(CollisionMapInfo& info) { worldTransform_.translati
 void Player::CeilingCollision(Player::CollisionMapInfo& info) {
 	if (info.ceiling) {
 		velocity_.y = 0.0f;
+	}
+}
+
+void Player::landingSwitch(CollisionMapInfo& info) {
+	if (onGround_) {
+		if (velocity_.y > 0.0f) {
+			onGround_ = false;
+		} else {
+			// 移动后四角坐标计算
+			std::array<Vector3, kNumCorners> positionsNew;
+			for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+				positionsNew[i] = CornerPosition(Add(worldTransform_.translation_, info.move), static_cast<Corner>(i));
+			}
+
+			// 上升？
+			if (info.move.y <= 0) {
+				return;
+			}
+
+			// 下落判定和切换
+			MapChipType mapChipType;
+			bool hit = false;
+			MapChipField::IndexSet indexSet;
+
+			// 左下
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
+			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+			if (mapChipType == MapChipType::kBlock) {
+				hit = true;
+			}
+			// 右下
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
+			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+			if (mapChipType == MapChipType::kBlock) {
+				hit = true;
+			}
+			if (!hit) {
+				onGround_ = false;
+			}
+		}
+	} else {
+		if (info.landing) {
+			onGround_ = true;
+			velocity_.x += (1.0f - kAttenuationLanding);
+			velocity_.y = 0.0f;
+		}
 	}
 }

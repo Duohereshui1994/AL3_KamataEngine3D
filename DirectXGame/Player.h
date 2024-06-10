@@ -4,7 +4,9 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "MapChipField.h"
-
+#include <algorithm>
+#include <cassert>
+#include <numbers>
 
 
 enum class LRDirection {
@@ -54,6 +56,9 @@ private:
 	// character 当たり判定 size （可能要调整）
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
+
+	//着地时速度衰减率
+	static inline const float kAttenuationLanding = 0.3f;
 	//===================Others===================
 
 	WorldTransform worldTransform_;
@@ -127,9 +132,9 @@ public:
 
 	void isMapChipUPCollision(CollisionMapInfo& info);
 
-	/*void isMapChipDownCollision(CollisionMapInfo& info);
+	void isMapChipDownCollision(CollisionMapInfo& info);
 
-	void isMapChipRightCollision(CollisionMapInfo& info);
+	/*void isMapChipRightCollision(CollisionMapInfo& info);
 
 	void isMapChipLeftCollision(CollisionMapInfo& info);*/
 
@@ -138,4 +143,6 @@ public:
 	void collisionResult(CollisionMapInfo& info);
 
 	void CeilingCollision(Player::CollisionMapInfo& info);
+
+	void landingSwitch(CollisionMapInfo& info);
 };
