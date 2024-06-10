@@ -261,6 +261,11 @@ void Player::isMapChipDownCollision(CollisionMapInfo& info) {
 		info.move.y = std::min(0.0f, info.move.y);
 		info.landing = true;
 	}
+
+	if (info.landing) {
+		velocity_.y = 0.0f;
+	}
+
 }
 
 // void Player::isMapChipRightCollision(CollisionMapInfo& info) {}
