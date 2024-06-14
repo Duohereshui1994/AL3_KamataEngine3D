@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cassert>
 #include <numbers>
+#include "DebugText.h"
 
 
 enum class LRDirection {
@@ -46,7 +47,7 @@ private:
 	// 最大落下速度
 	static inline const float kLimitFallSpeed = 0.5f;
 	// 跳跃初速度（上）
-	static inline const float kJumpAcceleration = 0.25f; // 方法1 std::max 的对应参数
+	static inline const float kJumpAcceleration = 0.5f; // 方法1 std::max 的对应参数
 	// static inline const float kJumpAcceleration = 2.0f;//方法2 std::clamp 的对应参数
 
 	//===================当たり判定===================
@@ -54,11 +55,15 @@ private:
 	MapChipField* mapChipField_ = nullptr;
 
 	// character 当たり判定 size （可能要调整）
-	static inline const float kWidth = 0.8f;
-	static inline const float kHeight = 0.8f;
+	static inline const float kWidth = 1.99f;
+	static inline const float kHeight = 1.99f;
+
+	static inline const float kBlank = 0.01f;//微小余白
 
 	//着地时速度衰减率
-	static inline const float kAttenuationLanding = 0.3f;
+	static inline const float kAttenuationLanding = 0.1f;
+	//撞墙减速率
+	static inline const float kAttenuationWall = 0.05f;
 	//===================Others===================
 
 	WorldTransform worldTransform_;
@@ -69,7 +74,7 @@ public:
 	struct CollisionMapInfo {
 		bool ceiling = false; // 天井
 		bool landing = false; // 着地
-		bool wall = false;    // 壁
+		bool hitWall = false;    // 壁
 		Vector3 move;         // 移動量
 	};
 
@@ -97,7 +102,6 @@ public:
 
 	void Move();
 
-	void LandingJudgment(bool& landing);
 
 	/// <summary>
 	/// 旋回制御
@@ -134,15 +138,16 @@ public:
 
 	void isMapChipDownCollision(CollisionMapInfo& info);
 
-	/*void isMapChipRightCollision(CollisionMapInfo& info);
+	void isMapChipRightCollision(CollisionMapInfo& info);
 
-	void isMapChipLeftCollision(CollisionMapInfo& info);*/
+	void isMapChipLeftCollision(CollisionMapInfo& info);
 
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
 
-	void collisionResult(CollisionMapInfo& info);
+	void collisionResultMove(CollisionMapInfo& info);
 
 	void CeilingCollision(Player::CollisionMapInfo& info);
+	void WallCollision(Player::CollisionMapInfo& info);
 
 	void landingSwitch(CollisionMapInfo& info);
 };
