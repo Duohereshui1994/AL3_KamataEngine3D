@@ -17,6 +17,8 @@ GameScene::~GameScene() {
 
 	delete _modelPlayerOBJ;
 
+	delete _modelEnemyOBJ;
+
 	delete debugCamera_;
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
@@ -45,20 +47,32 @@ void GameScene::Initialize() {
 
 	debugCamera_ = new DebugCamera(/*画面横幅*/ WinApp::kWindowWidth, /*画面縦幅*/ WinApp::kWindowHeight);
 
+	//====================Model=========================
+
 	model_ = Model::Create();
 
 	_modelSkydemo = Model::CreateFromOBJ("skydome", true); // 天球モデル
 
 	_modelPlayerOBJ = Model::CreateFromOBJ("playerOBJ", true); // player model
 
+	_modelEnemyOBJ = Model::CreateFromOBJ("enemyOBJ", true); // enemy model
+
+	//===================viewProjection_初始化===============================
+
 	viewProjection_.Initialize();
+
+	//====================天球==========================
 
 	_skydome = new Skydome();
 
 	_skydome->Initialize(_modelSkydemo, &viewProjection_);
 
+	//======================MapChip==========================
+
 	_mapChipField = new MapChipField();
 	_mapChipField->LoadMapChipCsv("Resources/block.csv");
+
+	//======================Player=========================
 
 	_player = new Player();
 
@@ -68,7 +82,20 @@ void GameScene::Initialize() {
 
 	_player->SetMapChipField(_mapChipField);
 
+	//======================Enemy==============================
+
+	_enemy = new Enemy();
+
+	Vector3 enemyPosition = _mapChipField->GetMapChipPositionByIndex(10, 18);
+
+	_enemy->Initialize(_modelEnemyOBJ, &viewProjection_, enemyPosition);
+
+
+	//======================生成地图====================================
+
 	GenerateBlocks();
+
+	//========================追踪相机========================================
 
 	_cameraController = new CameraController();
 	_cameraController->Initalize(&viewProjection_);
@@ -76,10 +103,10 @@ void GameScene::Initialize() {
 	//====================================================
 	// 设置相机的可移动区域
 	CameraController::Rect cameraArea;
-	//cameraArea.left = 10.0f;
-	//cameraArea.right = 188.0f;
-	//cameraArea.bottom = 5.0f;
-	//cameraArea.top = 100.0f;
+	// cameraArea.left = 10.0f;
+	// cameraArea.right = 188.0f;
+	// cameraArea.bottom = 5.0f;
+	// cameraArea.top = 100.0f;
 
 	cameraArea.left = 21.0f;
 	cameraArea.right = 200.0f;
@@ -109,6 +136,9 @@ void GameScene::Update() {
 	ImGui::Text("Press Space To Change Camera");
 	ImGui::Text("isDebugCameraActive = %d", isDebugCameraActive);
 
+	ImGui::Text("enemy posX = %f",_enemy->GetWorldTransform().translation_.x);
+	ImGui::Text("enemy posY = %f",_enemy->GetWorldTransform().translation_.y);
+	ImGui::Text("enemy posZ = %f",_enemy->GetWorldTransform().translation_.z);
 
 	ImGui::End();
 #endif // _DEBUG
@@ -133,6 +163,8 @@ void GameScene::Update() {
 	}
 
 	_player->Update();
+
+	_enemy->Update();
 
 	_cameraController->Update();
 	//===================================================================
@@ -179,6 +211,9 @@ void GameScene::Draw() {
 	}
 
 	_player->Draw();
+
+	if (_enemy != nullptr)
+		_enemy->Draw();
 	//===================================================================
 
 	// 3Dオブジェクト描画後処理

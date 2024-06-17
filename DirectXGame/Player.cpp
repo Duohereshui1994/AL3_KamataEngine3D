@@ -16,26 +16,25 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 
 void Player::Update() {
 
-	// 1
+	// 1 移动入力
 	Move();
 
-	//2
+	// 2 冲突判定
 	CollisionMapInfo collisionMapInfo;
 	collisionMapInfo.move = velocity_;
 	isMapChipCollision(collisionMapInfo);
-	//3
+	// 3 反应冲突判定的结果
 	collisionResultMove(collisionMapInfo);
-	//4
+	// 4 天花板冲突
 	CeilingCollision(collisionMapInfo);
-	//5
+	// 5 墙壁冲突
 	WallCollision(collisionMapInfo);
-	//6
+	// 6 落地状态切换
 	landingSwitch(collisionMapInfo);
-	//7
-	// 旋回制御
+	// 7 旋回制御
 	// 因为我自己的模型的原因 所以旋转角这样设置
 	ConvolutionalControl();
-	//8
+	// 8 更新位置
 	worldTransform_.UpdateMatrix();
 }
 

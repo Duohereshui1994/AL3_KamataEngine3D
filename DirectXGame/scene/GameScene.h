@@ -13,6 +13,7 @@
 #include "Skydome.h"
 #include "MapChipField.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "CameraController.h"
 
 
@@ -66,6 +67,8 @@ private: // メンバ変数	成员变量
 
 	Model* _modelPlayerOBJ = nullptr;
 
+	Model* _modelEnemyOBJ = nullptr;
+
 	ViewProjection viewProjection_;
 
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
@@ -78,6 +81,9 @@ private: // メンバ変数	成员变量
 
 	//player
 	Player* _player = nullptr;
+
+	//enemy
+	Enemy* _enemy = nullptr;
 
 	//追踪camera
 	CameraController* _cameraController = nullptr;
