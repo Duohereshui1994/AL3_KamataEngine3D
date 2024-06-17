@@ -23,7 +23,7 @@ void Enemy::Update() {
 	walkTimer_ += 1.0f / 60.0f;
 
 	//正弦回转动画
-
+	//TODO
 
 	// 更新模型的位置
 	worldTransform_.UpdateMatrix();
