@@ -132,22 +132,23 @@ public:
 	/// <param name="mapChipField"></param>
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
 
-	void isMapChipCollision(CollisionMapInfo& info);
+	void IsMapChipCollision(CollisionMapInfo& info);
 
-	void isMapChipUPCollision(CollisionMapInfo& info);
-
-	void isMapChipDownCollision(CollisionMapInfo& info);
-
-	void isMapChipRightCollision(CollisionMapInfo& info);
-
-	void isMapChipLeftCollision(CollisionMapInfo& info);
+	void IsMapChipUPCollision(CollisionMapInfo& info);
+		 
+	void IsMapChipDownCollision(CollisionMapInfo& info);
+		 
+	void IsMapChipRightCollision(CollisionMapInfo& info);
+		 
+	void IsMapChipLeftCollision(CollisionMapInfo& info);
 
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
 
-	void collisionResultMove(CollisionMapInfo& info);
+	void CollisionResultMove(CollisionMapInfo& info);
 
 	void CeilingCollision(Player::CollisionMapInfo& info);
+
 	void WallCollision(Player::CollisionMapInfo& info);
 
-	void landingSwitch(CollisionMapInfo& info);
+	void LandingSwitch(CollisionMapInfo& info);
 };

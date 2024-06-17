@@ -18,19 +18,18 @@ void Player::Update() {
 
 	// 1 移动入力
 	Move();
-
 	// 2 冲突判定
 	CollisionMapInfo collisionMapInfo;
 	collisionMapInfo.move = velocity_;
-	isMapChipCollision(collisionMapInfo);
+	IsMapChipCollision(collisionMapInfo);
 	// 3 反应冲突判定的结果
-	collisionResultMove(collisionMapInfo);
+	CollisionResultMove(collisionMapInfo);
 	// 4 天花板冲突
 	CeilingCollision(collisionMapInfo);
 	// 5 墙壁冲突
 	WallCollision(collisionMapInfo);
 	// 6 落地状态切换
-	landingSwitch(collisionMapInfo);
+	LandingSwitch(collisionMapInfo);
 	// 7 旋回制御
 	// 因为我自己的模型的原因 所以旋转角这样设置
 	ConvolutionalControl();
@@ -137,14 +136,14 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 /// map冲突判定
 /// </summary>
 /// <param name="info"></param>
-void Player::isMapChipCollision(CollisionMapInfo& info) {
-	isMapChipUPCollision(info);
-	isMapChipDownCollision(info);
-	isMapChipRightCollision(info);
-	isMapChipLeftCollision(info);
+void Player::IsMapChipCollision(CollisionMapInfo& info) {
+	IsMapChipUPCollision(info);
+	IsMapChipDownCollision(info);
+	IsMapChipRightCollision(info);
+	IsMapChipLeftCollision(info);
 }
 
-void Player::isMapChipUPCollision(CollisionMapInfo& info) {
+void Player::IsMapChipUPCollision(CollisionMapInfo& info) {
 	// 上升？ 早期return
 	if (info.move.y <= 0) {
 		return;
@@ -183,8 +182,8 @@ void Player::isMapChipUPCollision(CollisionMapInfo& info) {
 		info.ceiling = true;
 	}
 }
-
-void Player::isMapChipDownCollision(CollisionMapInfo& info) {
+			 
+void Player::IsMapChipDownCollision(CollisionMapInfo& info) {
 	// 下降？
 	if (info.move.y >= 0) {
 		return;
@@ -226,8 +225,8 @@ void Player::isMapChipDownCollision(CollisionMapInfo& info) {
 		info.landing = true;
 	}
 }
-
-void Player::isMapChipRightCollision(CollisionMapInfo& info) {
+			 
+void Player::IsMapChipRightCollision(CollisionMapInfo& info) {
 	if (info.move.x <= 0) {
 		return;
 	}
@@ -265,8 +264,8 @@ void Player::isMapChipRightCollision(CollisionMapInfo& info) {
 		info.hitWall = true;
 	}
 }
-
-void Player::isMapChipLeftCollision(CollisionMapInfo& info) {
+			 
+void Player::IsMapChipLeftCollision(CollisionMapInfo& info) {
 	if (info.move.x >= 0) {
 		return;
 	}
@@ -305,7 +304,7 @@ void Player::isMapChipLeftCollision(CollisionMapInfo& info) {
 	}
 }
 
-void Player::collisionResultMove(CollisionMapInfo& info) { worldTransform_.translation_ = Add(worldTransform_.translation_, info.move); }
+void Player::CollisionResultMove(CollisionMapInfo& info) { worldTransform_.translation_ = Add(worldTransform_.translation_, info.move); }
 
 void Player::CeilingCollision(Player::CollisionMapInfo& info) {
 	if (info.ceiling) {
@@ -319,7 +318,7 @@ void Player::WallCollision(Player::CollisionMapInfo& info) {
 	}
 }
 
-void Player::landingSwitch(CollisionMapInfo& info) {
+void Player::LandingSwitch(CollisionMapInfo& info) {
 	if (onGround_) {
 		if (velocity_.y > 0.0f) {
 			onGround_ = false;
