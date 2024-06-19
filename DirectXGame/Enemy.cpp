@@ -22,8 +22,11 @@ void Enemy::Update() {
 	// 动画计时器更新
 	walkTimer_ += 1.0f / 60.0f;
 
-	//正弦回转动画
-	//TODO
+	// 正弦回转动画
+
+	float param = std::sin(std::numbers::pi_v<float> * 2.0f * walkTimer_);
+	float radian = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
+	worldTransform_.rotation_.z = std::sin(radian);
 
 	// 更新模型的位置
 	worldTransform_.UpdateMatrix();

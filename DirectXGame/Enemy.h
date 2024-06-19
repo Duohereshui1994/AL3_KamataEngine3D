@@ -14,9 +14,9 @@ private:
 
 	//===================Animation===============
 
-	static inline const float kWalkMotionAngleStart = 0.0f;          // 最初的角度
-	static inline const float kWalkMotionAngleEnd = 2 * std::numbers::pi_v<float>; // 最后的角度
-	static inline const float kWalkMotionTime = 2.0f;                // 动画周期时间（秒）
+	static inline const float kWalkMotionAngleStart = -1 * std::numbers::pi_v<float>; // 最初的角度
+	static inline const float kWalkMotionAngleEnd = 2 * std::numbers::pi_v<float>;    // 最后的角度
+	static inline const float kWalkMotionTime = 2.0f;                                 // 动画周期时间（秒）
 
 	float walkTimer_ = 0.0f; // 动画计时器经过时间
 
