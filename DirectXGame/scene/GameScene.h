@@ -50,6 +50,11 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 检查场景所有碰撞
+	/// </summary>
+	void CheckAllCollisions();
+
 private: // メンバ変数	成员变量
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr; // 输入
@@ -83,7 +88,9 @@ private: // メンバ変数	成员变量
 	Player* _player = nullptr;
 
 	//enemy
-	Enemy* _enemy = nullptr;
+	//Enemy* _enemy = nullptr;
+	std::list<Enemy*> _enemies;//多个敌人
+	static inline const uint32_t enemyCount = 3;
 
 	//追踪camera
 	CameraController* _cameraController = nullptr;

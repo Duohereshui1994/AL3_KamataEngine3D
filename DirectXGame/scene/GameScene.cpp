@@ -11,6 +11,7 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	//===================================================================
 
+	// 解放模型
 	delete model_;
 
 	delete _modelSkydemo;
@@ -19,8 +20,10 @@ GameScene::~GameScene() {
 
 	delete _modelEnemyOBJ;
 
+	// 解放debug相机
 	delete debugCamera_;
 
+	// 解放地图块变换
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -28,6 +31,13 @@ GameScene::~GameScene() {
 	}
 	worldTransformBlocks_.clear();
 
+	// 解放敌人
+	for (Enemy* enemy : _enemies) {
+		delete enemy;
+	}
+	_enemies.clear();
+
+	// 解放地图块
 	delete _mapChipField;
 
 	delete _cameraController;
@@ -84,12 +94,21 @@ void GameScene::Initialize() {
 
 	//======================Enemy==============================
 
-	_enemy = new Enemy();
+	//_enemy = new Enemy();
 
-	Vector3 enemyPosition = _mapChipField->GetMapChipPositionByIndex(10, 18);
+	// Vector3 enemyPosition = _mapChipField->GetMapChipPositionByIndex(10, 18);
 
-	_enemy->Initialize(_modelEnemyOBJ, &viewProjection_, enemyPosition);
+	//_enemy->Initialize(_modelEnemyOBJ, &viewProjection_, enemyPosition);
 
+	// 多个敌人生成
+	// 位置
+	Vector3 enemyPosition[enemyCount];
+	for (uint32_t i = 0; i < enemyCount; ++i) {
+		Enemy* newEnemy = new Enemy();
+		enemyPosition[i] = _mapChipField->GetMapChipPositionByIndex(10, 18 - i * 2);
+		newEnemy->Initialize(_modelEnemyOBJ, &viewProjection_, enemyPosition[i]);
+		_enemies.push_back(newEnemy);
+	}
 
 	//======================生成地图====================================
 
@@ -136,10 +155,6 @@ void GameScene::Update() {
 	ImGui::Text("Press Space To Change Camera");
 	ImGui::Text("isDebugCameraActive = %d", isDebugCameraActive);
 
-	ImGui::Text("enemy posX = %f",_enemy->GetWorldTransform().translation_.x);
-	ImGui::Text("enemy posY = %f",_enemy->GetWorldTransform().translation_.y);
-	ImGui::Text("enemy posZ = %f",_enemy->GetWorldTransform().translation_.z);
-
 	ImGui::End();
 #endif // _DEBUG
 
@@ -164,7 +179,14 @@ void GameScene::Update() {
 
 	_player->Update();
 
-	_enemy->Update();
+	//_enemy->Update();
+
+	for (Enemy* enemy : _enemies) {
+		enemy->Update();
+	}
+
+	//all collisions check
+	CheckAllCollisions();
 
 	_cameraController->Update();
 	//===================================================================
@@ -212,8 +234,14 @@ void GameScene::Draw() {
 
 	_player->Draw();
 
-	if (_enemy != nullptr)
-		_enemy->Draw();
+	// if (_enemy != nullptr)
+	//	_enemy->Draw();
+
+	for (Enemy* enemy : _enemies) {
+		if (enemy != nullptr) {
+			enemy->Draw();
+		}
+	}
 	//===================================================================
 
 	// 3Dオブジェクト描画後処理
@@ -232,6 +260,23 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
+#pragma endregion
+}
+
+void GameScene::CheckAllCollisions() {
+#pragma region player and enemy
+	// プレイヤーと敌人の衝突判定
+	AABB aabb1, aabb2;
+
+	aabb1 = _player->GetAABB();
+
+	for (Enemy* enemy : _enemies) {
+		aabb2 = enemy->GetAABB();
+		if (IsCollision(aabb1, aabb2)) {
+			_player->OnCollision(enemy);
+			enemy->OnCollision(_player);
+		}
+	}
 #pragma endregion
 }
 

@@ -1,13 +1,13 @@
 #pragma once
 #define NOMINMAX
+#include "DebugText.h"
 #include "Input.h"
+#include "MapChipField.h"
 #include "Model.h"
 #include "WorldTransform.h"
-#include "MapChipField.h"
 #include <algorithm>
 #include <cassert>
 #include <numbers>
-#include "DebugText.h"
 
 
 enum class LRDirection {
@@ -16,6 +16,8 @@ enum class LRDirection {
 };
 
 class MapChipField;
+
+class Enemy;
 
 class Player {
 private:
@@ -58,11 +60,11 @@ private:
 	static inline const float kWidth = 1.99f;
 	static inline const float kHeight = 1.99f;
 
-	static inline const float kBlank = 0.01f;//微小余白
+	static inline const float kBlank = 0.01f; // 微小余白
 
-	//着地时速度衰减率
+	// 着地时速度衰减率
 	static inline const float kAttenuationLanding = 0.1f;
-	//撞墙减速率
+	// 撞墙减速率
 	static inline const float kAttenuationWall = 0.05f;
 	//===================Others===================
 
@@ -74,7 +76,7 @@ public:
 	struct CollisionMapInfo {
 		bool ceiling = false; // 天井
 		bool landing = false; // 着地
-		bool hitWall = false;    // 壁
+		bool hitWall = false; // 壁
 		Vector3 move;         // 移動量
 	};
 
@@ -86,7 +88,6 @@ public:
 
 		kNumCorners // 要素数
 	};
-
 
 	Player();
 	~Player();
@@ -100,14 +101,15 @@ public:
 	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// 移动
+	/// </summary>
 	void Move();
-
 
 	/// <summary>
 	/// 旋回制御
 	/// </summary>
 	void ConvolutionalControl();
-
 
 	/// <summary>
 	/// 描画
@@ -132,14 +134,34 @@ public:
 	/// <param name="mapChipField"></param>
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
 
+	//========================玩家和敌人的判定AABB=============================
+
+	/// <summary>
+	/// 获得玩家的世界位置坐标
+	/// </summary>
+	/// <returns></returns>
+	Vector3 GetWorldPosition();
+
+	/// <summary>
+	/// 获得玩家aabb
+	/// </summary>
+	/// <returns></returns>
+	AABB GetAABB();
+
+	/// <summary>
+	/// 冲突结果
+	/// </summary>
+	void OnCollision(const Enemy* enemy);
+
+	//=========================玩家和地图块的判定============================
 	void IsMapChipCollision(CollisionMapInfo& info);
 
 	void IsMapChipUPCollision(CollisionMapInfo& info);
-		 
+
 	void IsMapChipDownCollision(CollisionMapInfo& info);
-		 
+
 	void IsMapChipRightCollision(CollisionMapInfo& info);
-		 
+
 	void IsMapChipLeftCollision(CollisionMapInfo& info);
 
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
@@ -151,4 +173,5 @@ public:
 	void WallCollision(Player::CollisionMapInfo& info);
 
 	void LandingSwitch(CollisionMapInfo& info);
+	//=====================================================
 };

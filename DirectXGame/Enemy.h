@@ -4,9 +4,15 @@
 #include <cassert>
 #include <numbers>
 
+class Player;
 class Enemy {
 
 private:
+	//=====================碰撞=====================
+
+	static inline const float kWidth = 1.99f;
+	static inline const float kHeight = 1.99f;
+
 	//===================Move===================
 
 	static inline const float kWalkSpeed = 0.05f;
@@ -34,4 +40,23 @@ public:
 	void Draw();
 
 	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
+	//===================冲突判定===================
+
+	/// <summary>
+	/// 获得世界位置坐标
+	/// </summary>
+	Vector3 GetWorldPosition();
+
+	/// <summary>
+	/// 获得AABB
+	/// </summary>
+	AABB GetAABB();
+
+	/// <summary>
+	/// 冲突结果
+	/// </summary>
+	void OnCollision(const Player* player);
+
+	//==============================================
 };

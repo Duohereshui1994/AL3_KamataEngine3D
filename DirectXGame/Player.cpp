@@ -37,6 +37,9 @@ void Player::Update() {
 	worldTransform_.UpdateMatrix();
 }
 
+/// <summary>
+/// 移动
+/// </summary>
 void Player::Move() {
 
 	velocity_ = Add(velocity_, {0.0f, -kGravityAcceleration, 0.0f});
@@ -86,17 +89,6 @@ void Player::Move() {
 }
 
 /// <summary>
-/// 描画
-/// </summary>
-void Player::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
-
-/// <summary>
-/// 获得世界变换
-/// </summary>
-/// <returns></returns>
-WorldTransform& Player::GetWorldTransform() { return worldTransform_; }
-
-/// <summary>
 /// 旋回制御
 /// </summary>
 void Player::ConvolutionalControl() {
@@ -114,6 +106,47 @@ void Player::ConvolutionalControl() {
 		worldTransform_.rotation_.y = std::lerp(destinationRotationY, turnFirstRotation_, turnTimer_);
 	}
 }
+
+/// <summary>
+/// 描画
+/// </summary>
+void Player::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
+
+/// <summary>
+/// 获得玩家的世界位置坐标
+/// </summary>
+Vector3 Player::GetWorldPosition() {
+	Vector3 worldPos = {};
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	return worldPos;
+}
+
+/// <summary>
+/// 获得世界变换
+/// </summary>
+/// <returns></returns>
+WorldTransform& Player::GetWorldTransform() { return worldTransform_; }
+
+/// <summary>
+/// 获得玩家的AABB
+/// </summary>
+/// <returns></returns>
+AABB Player::GetAABB() {
+	Vector3 worldPos = GetWorldPosition();
+	AABB aabb;
+	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
+	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
+	return aabb;
+}
+
+void Player::OnCollision(const Enemy* enemy) {
+	(void)enemy;
+	velocity_ += Vector3(0, 2.0f, 0);
+}
+
+#pragma region 玩家和地图块的碰撞
 
 /// <summary>
 /// 获得角点位置
@@ -182,7 +215,7 @@ void Player::IsMapChipUPCollision(CollisionMapInfo& info) {
 		info.ceiling = true;
 	}
 }
-			 
+
 void Player::IsMapChipDownCollision(CollisionMapInfo& info) {
 	// 下降？
 	if (info.move.y >= 0) {
@@ -225,7 +258,7 @@ void Player::IsMapChipDownCollision(CollisionMapInfo& info) {
 		info.landing = true;
 	}
 }
-			 
+
 void Player::IsMapChipRightCollision(CollisionMapInfo& info) {
 	if (info.move.x <= 0) {
 		return;
@@ -264,7 +297,7 @@ void Player::IsMapChipRightCollision(CollisionMapInfo& info) {
 		info.hitWall = true;
 	}
 }
-			 
+
 void Player::IsMapChipLeftCollision(CollisionMapInfo& info) {
 	if (info.move.x >= 0) {
 		return;
@@ -364,3 +397,5 @@ void Player::LandingSwitch(CollisionMapInfo& info) {
 		}
 	}
 }
+
+#pragma endregion
