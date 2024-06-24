@@ -67,7 +67,6 @@ public: // メンバ関数
 	/// <returns></returns>
 	bool IsDead() const { return isDead_; }
 
-	bool SetIsDead(bool value) { isDead_ = value; }
 
 private: // メンバ変数	成员变量
 	DirectXCommon* dxCommon_ = nullptr;

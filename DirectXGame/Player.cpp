@@ -146,6 +146,7 @@ AABB Player::GetAABB() {
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
 	velocity_ += Vector3(0, 2.0f, 0);
+	
 }
 
 #pragma region 玩家和地图块的碰撞
