@@ -14,6 +14,7 @@
 #include "MapChipField.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "DeathParticles.h"
 #include "CameraController.h"
 
 
@@ -74,6 +75,8 @@ private: // メンバ変数	成员变量
 
 	Model* _modelEnemyOBJ = nullptr;
 
+	Model* _modelParticleOBJ = nullptr;
+
 	ViewProjection viewProjection_;
 
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
@@ -91,6 +94,10 @@ private: // メンバ変数	成员变量
 	//Enemy* _enemy = nullptr;
 	std::list<Enemy*> _enemies;//多个敌人
 	static inline const uint32_t enemyCount = 3;
+
+	//粒子
+	DeathParticles* deathParticles_ = nullptr;
+
 
 	//追踪camera
 	CameraController* _cameraController = nullptr;

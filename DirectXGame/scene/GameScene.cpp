@@ -37,6 +37,9 @@ GameScene::~GameScene() {
 	}
 	_enemies.clear();
 
+	// 解放粒子
+	delete deathParticles_;
+
 	// 解放地图块
 	delete _mapChipField;
 
@@ -67,6 +70,8 @@ void GameScene::Initialize() {
 
 	_modelEnemyOBJ = Model::CreateFromOBJ("enemyOBJ", true); // enemy model
 
+	_modelParticleOBJ = Model::CreateFromOBJ("particle", true); // enemy model
+
 	//===================viewProjection_初始化===============================
 
 	viewProjection_.Initialize();
@@ -86,7 +91,7 @@ void GameScene::Initialize() {
 
 	_player = new Player();
 
-	Vector3 playerPosition = _mapChipField->GetMapChipPositionByIndex(1, 18);
+	Vector3 playerPosition = _mapChipField->GetMapChipPositionByIndex(2, 18);
 
 	_player->Initialize(_modelPlayerOBJ, &viewProjection_, playerPosition);
 
@@ -110,6 +115,12 @@ void GameScene::Initialize() {
 		_enemies.push_back(newEnemy);
 	}
 
+	//======================生成粒子====================================
+
+	deathParticles_ = new DeathParticles();
+	
+	deathParticles_->Initialize(_modelParticleOBJ, &viewProjection_, playerPosition);
+	
 	//======================生成地图====================================
 
 	GenerateBlocks();
@@ -158,8 +169,10 @@ void GameScene::Update() {
 	ImGui::End();
 #endif // _DEBUG
 
+	//=======================天球更新================
 	_skydome->Update();
 
+	//=============================================
 	if (isDebugCameraActive == true) {
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
@@ -169,6 +182,7 @@ void GameScene::Update() {
 		viewProjection_.UpdateMatrix();
 	}
 
+	//=======================地图块更新================
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			if (!worldTransformBlock)
@@ -177,17 +191,28 @@ void GameScene::Update() {
 		}
 	}
 
+	//=======================Player更新================
 	_player->Update();
 
+	//=======================Enemy更新================
 	//_enemy->Update();
 
 	for (Enemy* enemy : _enemies) {
 		enemy->Update();
 	}
 
+	//=======================粒子更新================
+
+	if (deathParticles_ != nullptr) {
+		deathParticles_->Update();
+	}
+
+
+	//=======================碰撞更新================
 	//all collisions check
 	CheckAllCollisions();
 
+	//=======================追踪相机更新================
 	_cameraController->Update();
 	//===================================================================
 }
@@ -222,8 +247,10 @@ void GameScene::Draw() {
 
 	//===================================================================
 
+	//=======================天球描画================
 	_skydome->Draw();
 
+	//=======================地图块描画================
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			if (!worldTransformBlock)
@@ -232,7 +259,10 @@ void GameScene::Draw() {
 		}
 	}
 
+	//=======================Player描画================
 	_player->Draw();
+
+	//=======================Enemy描画================
 
 	// if (_enemy != nullptr)
 	//	_enemy->Draw();
@@ -242,6 +272,14 @@ void GameScene::Draw() {
 			enemy->Draw();
 		}
 	}
+
+	//=======================粒子描画================
+	
+	if (deathParticles_ != nullptr) {
+		deathParticles_->Draw();
+	}
+
+	
 	//===================================================================
 
 	// 3Dオブジェクト描画後処理
