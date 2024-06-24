@@ -258,6 +258,7 @@ void Player::IsMapChipDownCollision(CollisionMapInfo& info) {
 
 		info.move.y = std::min(0.0f, moveY);
 		info.landing = true;
+
 	} else {
 		info.landing = false;
 	}
@@ -347,6 +348,9 @@ void Player::CeilingCollision(Player::CollisionMapInfo& info) {
 	if (info.ceiling) {
 		velocity_.y = 0.0f;
 	}
+	if (info.landing) {
+		velocity_.y = 0.0f;
+	}
 }
 
 void Player::WallCollision(Player::CollisionMapInfo& info) {
@@ -356,11 +360,13 @@ void Player::WallCollision(Player::CollisionMapInfo& info) {
 }
 
 void Player::LandingSwitch(CollisionMapInfo& info) {
+	velocity_ = Add(velocity_, {0.0f, -kGravityAcceleration, 0.0f});
+	velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 
 	if (onGround_) {
 		if (velocity_.y > 0.0f) {
 			onGround_ = false;
-		} else if (!info.landing) {
+		} else /*if (!info.landing)*/ {
 			// 移动后四角坐标计算
 			std::array<Vector3, kNumCorners> positionsNew;
 			for (uint32_t i = 0; i < positionsNew.size(); ++i) {
@@ -368,8 +374,8 @@ void Player::LandingSwitch(CollisionMapInfo& info) {
 			}
 
 			// if (info.move.y <= 0) {
-			//	return;
-			// }
+			// return;
+			//}
 
 			// 下落判定和切换
 			MapChipType mapChipType;
@@ -377,19 +383,18 @@ void Player::LandingSwitch(CollisionMapInfo& info) {
 			MapChipField::IndexSet indexSet;
 
 			// 左下
-			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom]);
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftBottom] - Vector3{0, kBlank, 0});
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {
 				hit = true;
 			}
 			// 右下
-			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom]);
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightBottom] - Vector3{0, kBlank, 0});
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {
 				hit = true;
 			}
 			if (!hit) {
-				info.landing = false;
 				onGround_ = false;
 			}
 		}
@@ -399,9 +404,6 @@ void Player::LandingSwitch(CollisionMapInfo& info) {
 			onGround_ = true;
 			velocity_.x *= (1.0f - kAttenuationLanding);
 			velocity_.y = 0.0f;
-		} else {
-			velocity_ = Add(velocity_, {0.0f, -kGravityAcceleration, 0.0f});
-			velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 		}
 	}
 }
