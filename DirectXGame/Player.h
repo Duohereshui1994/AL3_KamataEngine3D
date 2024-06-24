@@ -173,5 +173,7 @@ public:
 	void WallCollision(Player::CollisionMapInfo& info);
 
 	void LandingSwitch(CollisionMapInfo& info);
+
+	bool IsOnGround() const { return onGround_; }
 	//=====================================================
 };

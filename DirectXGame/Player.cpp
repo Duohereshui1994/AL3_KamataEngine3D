@@ -42,8 +42,10 @@ void Player::Update() {
 /// </summary>
 void Player::Move() {
 
-	velocity_ = Add(velocity_, {0.0f, -kGravityAcceleration, 0.0f});
-	velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
+	// if (!onGround_) {
+	//	velocity_ = Add(velocity_, {0.0f, -kGravityAcceleration, 0.0f});
+	//	velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
+	// }
 
 	// 移动
 	if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
@@ -217,7 +219,7 @@ void Player::IsMapChipUPCollision(CollisionMapInfo& info) {
 }
 
 void Player::IsMapChipDownCollision(CollisionMapInfo& info) {
-	// 下降？
+	// if player up return
 	if (info.move.y >= 0) {
 		return;
 	}
@@ -256,6 +258,8 @@ void Player::IsMapChipDownCollision(CollisionMapInfo& info) {
 
 		info.move.y = std::min(0.0f, moveY);
 		info.landing = true;
+	} else {
+		info.landing = false;
 	}
 }
 
@@ -352,20 +356,20 @@ void Player::WallCollision(Player::CollisionMapInfo& info) {
 }
 
 void Player::LandingSwitch(CollisionMapInfo& info) {
+
 	if (onGround_) {
 		if (velocity_.y > 0.0f) {
 			onGround_ = false;
-		} else {
+		} else if (!info.landing) {
 			// 移动后四角坐标计算
 			std::array<Vector3, kNumCorners> positionsNew;
 			for (uint32_t i = 0; i < positionsNew.size(); ++i) {
 				positionsNew[i] = CornerPosition(Add(worldTransform_.translation_, info.move), static_cast<Corner>(i));
 			}
 
-			// 上升？
-			if (info.move.y <= 0) {
-				return;
-			}
+			// if (info.move.y <= 0) {
+			//	return;
+			// }
 
 			// 下落判定和切换
 			MapChipType mapChipType;
@@ -385,6 +389,7 @@ void Player::LandingSwitch(CollisionMapInfo& info) {
 				hit = true;
 			}
 			if (!hit) {
+				info.landing = false;
 				onGround_ = false;
 			}
 		}
@@ -394,6 +399,9 @@ void Player::LandingSwitch(CollisionMapInfo& info) {
 			onGround_ = true;
 			velocity_.x *= (1.0f - kAttenuationLanding);
 			velocity_.y = 0.0f;
+		} else {
+			velocity_ = Add(velocity_, {0.0f, -kGravityAcceleration, 0.0f});
+			velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 		}
 	}
 }

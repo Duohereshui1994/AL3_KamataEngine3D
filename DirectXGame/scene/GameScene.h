@@ -56,10 +56,26 @@ public: // メンバ関数
 	/// </summary>
 	void CheckAllCollisions();
 
+	/// <summary>
+	/// 切换阶段
+	/// </summary>
+	void ChangePhase();
+
+	/// <summary>
+	/// flag getter
+	/// </summary>
+	/// <returns></returns>
+	bool IsDead() const { return isDead_; }
+
+	bool SetIsDead(bool value) { isDead_ = value; }
+
 private: // メンバ変数	成员变量
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr; // 输入
 	Audio* audio_ = nullptr; // 音频Audio
+	//========================phase切换参数============================
+	//flag
+	bool isDead_ = false;
 
 	//===================================================================
 
@@ -107,6 +123,14 @@ private: // メンバ変数	成员变量
 	/// </summary>
 	void GenerateBlocks();
 
+	//===============================phase=============================
+
+	enum class Phase {
+		kPlay,
+		kDeath,
+	};
+
+	Phase phase_;
 
 	//===================================================================
 

@@ -54,6 +54,9 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
+	//=================phase======================
+	phase_ = Phase::kPlay;
+
 	//===================================================================
 
 	isDebugCameraActive = false;
@@ -118,9 +121,9 @@ void GameScene::Initialize() {
 	//======================生成粒子====================================
 
 	deathParticles_ = new DeathParticles();
-	
+
 	deathParticles_->Initialize(_modelParticleOBJ, &viewProjection_, playerPosition);
-	
+
 	//======================生成地图====================================
 
 	GenerateBlocks();
@@ -165,55 +168,89 @@ void GameScene::Update() {
 	ImGui::Begin("Debug1");
 	ImGui::Text("Press Space To Change Camera");
 	ImGui::Text("isDebugCameraActive = %d", isDebugCameraActive);
+	ImGui::Text("onGround = %d", _player->IsOnGround());
 
 	ImGui::End();
 #endif // _DEBUG
 
-	//=======================天球更新================
-	_skydome->Update();
+	//=======================phase更新================
+	switch (phase_) {
+	case Phase::kPlay:
+
+		//=======================天球更新================
+		_skydome->Update();
+
+		//=======================地图块更新================
+		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+				if (!worldTransformBlock)
+					continue;
+				worldTransformBlock->UpdateMatrix();
+			}
+		}
+
+		//=======================Player更新================
+		_player->Update();
+
+		//=======================Enemy更新================
+		//_enemy->Update();
+
+		for (Enemy* enemy : _enemies) {
+			enemy->Update();
+		}
+
+		//=======================碰撞更新================
+		// all collisions check
+		CheckAllCollisions();
+
+		//=======================追踪相机更新================
+		_cameraController->Update();
+
+		break;
+	case Phase::kDeath:
+
+		//=======================天球更新================
+		_skydome->Update();
+
+		//=======================地图块更新================
+		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+				if (!worldTransformBlock)
+					continue;
+				worldTransformBlock->UpdateMatrix();
+			}
+		}
+		//=======================Enemy更新================
+		//_enemy->Update();
+
+		for (Enemy* enemy : _enemies) {
+			enemy->Update();
+		}
+
+		//=======================粒子更新================
+
+		if (deathParticles_ != nullptr) {
+			deathParticles_->Update();
+		}
+
+		//=======================追踪相机更新================
+		_cameraController->Update();
+
+		break;
+	default:
+		break;
+	}
 
 	//=============================================
-	if (isDebugCameraActive == true) {
-		debugCamera_->Update();
-		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
-		viewProjection_.TransferMatrix();
-	} else {
-		viewProjection_.UpdateMatrix();
-	}
+	// if (isDebugCameraActive == true) {
+	//	debugCamera_->Update();
+	//	viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+	//	viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+	//	viewProjection_.TransferMatrix();
+	//} else {
+	//	viewProjection_.UpdateMatrix();
+	//}
 
-	//=======================地图块更新================
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
-		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
-			if (!worldTransformBlock)
-				continue;
-			worldTransformBlock->UpdateMatrix();
-		}
-	}
-
-	//=======================Player更新================
-	_player->Update();
-
-	//=======================Enemy更新================
-	//_enemy->Update();
-
-	for (Enemy* enemy : _enemies) {
-		enemy->Update();
-	}
-
-	//=======================粒子更新================
-
-	if (deathParticles_ != nullptr) {
-		deathParticles_->Update();
-	}
-
-
-	//=======================碰撞更新================
-	//all collisions check
-	CheckAllCollisions();
-
-	//=======================追踪相机更新================
-	_cameraController->Update();
 	//===================================================================
 }
 
@@ -274,12 +311,11 @@ void GameScene::Draw() {
 	}
 
 	//=======================粒子描画================
-	
+
 	if (deathParticles_ != nullptr) {
 		deathParticles_->Draw();
 	}
 
-	
 	//===================================================================
 
 	// 3Dオブジェクト描画後処理
@@ -336,5 +372,14 @@ void GameScene::GenerateBlocks() {
 				worldTransformBlocks_[i][j]->translation_ = _mapChipField->GetMapChipPositionByIndex(j, i);
 			}
 		}
+	}
+}
+
+void GameScene::ChangePhase() {
+	switch (phase_) {
+	case Phase::kPlay:
+		break;
+	case Phase::kDeath:
+		break;
 	}
 }
