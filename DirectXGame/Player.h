@@ -25,7 +25,7 @@ private:
 	Vector3 velocity_ = {};
 
 	// 加速度
-	static inline const float kAcceleration = 0.01f;
+	static inline const float kAcceleration = 0.1f;
 	// 速度衰减系数
 	static inline const float kAttenuation = 0.05f;
 	// 最大速度
@@ -65,7 +65,7 @@ private:
 	// 着地时速度衰减率
 	static inline const float kAttenuationLanding = 0.1f;
 	// 撞墙减速率
-	static inline const float kAttenuationWall = 0.05f;
+	static inline const float kAttenuationWall = 0.6f;
 	//===================Others===================
 
 	WorldTransform worldTransform_;

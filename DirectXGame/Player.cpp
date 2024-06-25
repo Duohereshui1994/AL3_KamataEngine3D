@@ -298,7 +298,7 @@ void Player::IsMapChipRightCollision(CollisionMapInfo& info) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition((worldTransform_.translation_ + info.move) + offset);
 		MapChipField::Rect rect = mapChipField_->GetRectByIndexSet(indexSet.xIndex, indexSet.yIndex);
 
-		float moveX = rect.left - worldTransform_.translation_.x - kWidth / 2 + kBlank;
+		float moveX = rect.left - worldTransform_.translation_.x - kWidth / 2 - kBlank;
 		info.move.x = std::max(0.0f, moveX);
 		info.hitWall = true;
 	}
