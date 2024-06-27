@@ -96,7 +96,7 @@ void GameScene::Initialize() {
 
 	Vector3 playerPosition = _mapChipField->GetMapChipPositionByIndex(2, 18);
 
-	_player->Initialize(_modelPlayerOBJ, &viewProjection_, playerPosition);
+	_player->Initialize(_modelPlayerOBJ, &viewProjection_, playerPosition, this);
 
 	_player->SetMapChipField(_mapChipField);
 
@@ -122,7 +122,7 @@ void GameScene::Initialize() {
 
 	deathParticles_ = new DeathParticles();
 
-	deathParticles_->Initialize(_modelParticleOBJ, &viewProjection_, playerPosition);
+	// deathParticles_->Initialize(_modelParticleOBJ, &viewProjection_, playerPosition);
 
 	//======================生成地图====================================
 
@@ -165,6 +165,8 @@ void GameScene::Update() {
 	ImGui::Text("Press Space To Change Camera");
 	ImGui::Text("isDebugCameraActive = %d", isDebugCameraActive);
 	ImGui::Text("onGround = %d", _player->IsOnGround());
+
+	ImGui::Text("isdead = %d", IsDead());
 
 	ImGui::End();
 #endif // _DEBUG
@@ -228,7 +230,9 @@ void GameScene::Draw() {
 	}
 
 	//=======================Player描画================
-	_player->Draw();
+	if (!isDead_) {
+		_player->Draw();
+	}
 
 	//=======================Enemy描画================
 
@@ -329,7 +333,11 @@ void GameScene::ChangePhase() {
 	//=======================追踪相机更新================
 	_cameraController->Update();
 
+	//===========================阶段=============================
+
 	switch (phase_) {
+
+		// 游玩状态
 	case Phase::kPlay:
 		//=======================Player更新================
 		_player->Update();
@@ -338,7 +346,15 @@ void GameScene::ChangePhase() {
 		// all collisions check
 		CheckAllCollisions();
 
+		//=======================死亡判定================
+		if (isDead_) {
+			const Vector3& deathPosition = _player->GetWorldTransform().translation_;
+			deathParticles_->Initialize(_modelParticleOBJ, &viewProjection_, deathPosition);
+			phase_ = Phase::kDeath;
+		}
 		break;
+
+		// 玩家死亡
 	case Phase::kDeath:
 
 		//=======================粒子更新================

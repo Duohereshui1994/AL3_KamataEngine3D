@@ -1,10 +1,11 @@
 #include "Player.h"
+#include "GameScene.h"
 
 Player::Player() {}
 
 Player::~Player() {}
 
-void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
+void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, GameScene* gameScene) {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
@@ -12,6 +13,7 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	// 模型旋转二分之Pi。 但是我自己做的模型朝向是向左，所以不需要旋转
 	// worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 	viewProjection_ = viewProjection;
+	gameScene_ = gameScene;
 }
 
 void Player::Update() {
@@ -145,8 +147,9 @@ AABB Player::GetAABB() {
 
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
-	velocity_ += Vector3(0, 2.0f, 0);
-	
+	//velocity_ += Vector3(0, 2.0f, 0);
+
+	gameScene_->SetIsDead(true);
 }
 
 #pragma region 玩家和地图块的碰撞

@@ -9,11 +9,13 @@
 #include <cassert>
 #include <numbers>
 
-
 enum class LRDirection {
 	kRight,
 	kLeft,
 };
+
+
+class GameScene;
 
 class MapChipField;
 
@@ -21,6 +23,7 @@ class Enemy;
 
 class Player {
 private:
+	GameScene *gameScene_;
 	//===================加减速移动===================
 	Vector3 velocity_ = {};
 
@@ -94,7 +97,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
+	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, GameScene* gameScene);
 
 	/// <summary>
 	/// 毎フレーム処理
