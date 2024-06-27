@@ -72,11 +72,13 @@ public: // メンバ関数
 		return isDead_;
 	}
 
-
+	bool IsFinished() const { return finished_; }
 private: // メンバ変数	成员变量
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr; // 输入
 	Audio* audio_ = nullptr; // 音频Audio
+	//========================scene切换参数============================
+	bool finished_ = false;
 	//========================phase切换参数============================
 	//flag
 	bool isDead_ = false;

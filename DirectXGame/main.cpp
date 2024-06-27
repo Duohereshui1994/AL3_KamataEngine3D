@@ -6,9 +6,18 @@
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
+#include "TitleScene.h"
 #include "WinApp.h"
 
-// Windowsアプリでのエントリーポイント(main関数)	主函数
+enum class Scene {
+	kUnkonwn = 0,
+	kTitle,
+	kGame,
+};
+Scene scene = Scene::kUnkonwn;
+
+void ChangeScene();
+    // Windowsアプリでのエントリーポイント(main関数)	主函数
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp* win = nullptr;
 	DirectXCommon* dxCommon = nullptr;
@@ -17,11 +26,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Audio* audio = nullptr;
 	AxisIndicator* axisIndicator = nullptr;
 	PrimitiveDrawer* primitiveDrawer = nullptr;
+	TitleScene* titleScene = nullptr;
 	GameScene* gameScene = nullptr;
 
 	// ゲームウィンドウの作成		GameWindow制作
 	win = WinApp::GetInstance();
-	win->CreateGameWindow(L"GC2A_04_ゴ_ウ_AL3");//User Name
+	win->CreateGameWindow(L"GC2A_04_ゴ_ウ_AL3"); // User Name
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
@@ -57,10 +67,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	primitiveDrawer = PrimitiveDrawer::GetInstance();
 	primitiveDrawer->Initialize();
 #pragma endregion
+	// 最初のシーンの初期化
+	scene = Scene::kTitle;
+
+	// タイトルシーンの初期化	TitleScene初始化
+	titleScene = new TitleScene();
+	titleScene->Initialize();
 
 	// ゲームシーンの初期化	GameScene初始化
 	gameScene = new GameScene();
 	gameScene->Initialize();
+
 
 	// メインループ	主循环
 	while (true) {
@@ -73,6 +90,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Begin();
 		// 入力関連の毎フレーム処理	输入关联的每帧处理
 		input->Update();
+		// タイトルシーンの毎フレーム処理	TitleScene的每帧处理
+		titleScene->Update();
 		// ゲームシーンの毎フレーム処理	GameScene的每帧处理
 		gameScene->Update();
 		// 軸表示の更新
@@ -84,6 +103,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->PreDraw();
 		// ゲームシーンの描画		GameScene描画
 		gameScene->Draw();
+		// タイトルシーンの描画		TitleScene描画
+		titleScene->Draw();
 		// 軸表示の描画
 		axisIndicator->Draw();
 		// プリミティブ描画のリセット		重置原始绘制
@@ -95,6 +116,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 	// 各種解放
+	delete titleScene;
 	delete gameScene;
 	// 3Dモデル解放
 	Model::StaticFinalize();
@@ -107,3 +129,4 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	return 0;
 }
+
