@@ -363,6 +363,10 @@ void GameScene::ChangePhase() {
 			deathParticles_->Update();
 		}
 
+		if (deathParticles_ && deathParticles_->IsFinished()) {
+			finished_ = true;
+		}
+
 		break;
 	}
 }

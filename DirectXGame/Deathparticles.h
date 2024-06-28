@@ -51,4 +51,6 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	bool IsFinished() { return isFinished_; }
 };
