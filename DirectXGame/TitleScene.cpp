@@ -8,12 +8,15 @@ TitleScene::~TitleScene() {
 }
 
 void TitleScene::Initialize() {
+
+	dxCommon_ = DirectXCommon::GetInstance();
+
 	viewProjection_.Initialize();
 
 	modelTitle_ = Model::CreateFromOBJ("title", true);
 
 	moji_ = new titleMoji();
-	Vector3 position = {640.0f, 100.0f, 0.0f};
+	Vector3 position = {0.0f, 0.0f, 0.0f};
 	moji_->Initialize(modelTitle_, &viewProjection_, position);
 }
 
@@ -24,4 +27,11 @@ void TitleScene::Update() {
 	}
 }
 
-void TitleScene::Draw() { moji_->Draw(); }
+void TitleScene::Draw() {
+	// コマンドリストの取得	获取命令列表
+	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
+
+	Model::PreDraw(commandList);
+	moji_->Draw();
+	Model::PostDraw();
+}

@@ -2,8 +2,12 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include <cassert>
+#include <numbers>
+#include <algorithm>
+
 class titleMoji {
 private:
+	float deltaTime;
 	WorldTransform worldTransform_;
 	ViewProjection* viewProjection_ = nullptr;
 	Model* model_ = nullptr;
