@@ -33,7 +33,6 @@ void Player::Update() {
 	// 6 落地状态切换
 	LandingSwitch(collisionMapInfo);
 	// 7 旋回制御
-	// 因为我自己的模型的原因 所以旋转角这样设置
 	ConvolutionalControl();
 	// 8 更新位置
 	worldTransform_.UpdateMatrix();
@@ -145,9 +144,12 @@ AABB Player::GetAABB() {
 	return aabb;
 }
 
+/// <summary>
+/// 衝突判定結果
+/// </summary>
+/// <param name="enemy"></param>
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
-	//velocity_ += Vector3(0, 2.0f, 0);
 
 	gameScene_->SetIsDead(true);
 }

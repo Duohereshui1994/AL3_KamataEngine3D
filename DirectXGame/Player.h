@@ -9,12 +9,13 @@
 #include <cassert>
 #include <numbers>
 
+// 左右方向
 enum class LRDirection {
 	kRight,
 	kLeft,
 };
 
-
+// 前方宣言
 class GameScene;
 
 class MapChipField;
@@ -23,7 +24,8 @@ class Enemy;
 
 class Player {
 private:
-	GameScene *gameScene_;
+	// ゲームシーン　ポインタ
+	GameScene* gameScene_;
 	//===================加减速移动===================
 	Vector3 velocity_ = {};
 
@@ -34,7 +36,7 @@ private:
 	// 最大速度
 	static inline const float kLimitRunSpeed = 0.5f;
 
-	//===================圆滑转向===================
+	//===================円滑回転===================
 	// 方向
 	LRDirection lrDirection_ = LRDirection::kRight;
 	// 角度補間
@@ -57,6 +59,7 @@ private:
 
 	//===================当たり判定===================
 
+	// マップチップ　変数
 	MapChipField* mapChipField_ = nullptr;
 
 	// character 当たり判定 size （可能要调整）
@@ -71,11 +74,15 @@ private:
 	static inline const float kAttenuationWall = 0.6f;
 	//===================Others===================
 
+	//ワールド変換
 	WorldTransform worldTransform_;
+	//投影
 	ViewProjection* viewProjection_ = nullptr;
+	//モデル
 	Model* model_ = nullptr;
 
 public:
+	//衝突情報構造体
 	struct CollisionMapInfo {
 		bool ceiling = false; // 天井
 		bool landing = false; // 着地
@@ -83,6 +90,7 @@ public:
 		Vector3 move;         // 移動量
 	};
 
+	//矩形コーナー情報
 	enum Corner {
 		kRightBottom, // 右下
 		kLeftBottom,  // 左下
@@ -92,7 +100,9 @@ public:
 		kNumCorners // 要素数
 	};
 
+	// コンストラクタ
 	Player();
+	// デストラクタ
 	~Player();
 	/// <summary>
 	/// 初期化
