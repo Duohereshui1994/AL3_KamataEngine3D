@@ -15,7 +15,7 @@ enum class LRDirection {
 	kLeft,
 };
 
-// 前方宣言
+// 前方宣言 classのnameだけ　具体的な定義がない　コンパイルの時間が短い
 class GameScene;
 
 class MapChipField;
@@ -130,13 +130,13 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// 获得玩家的速度
+	/// プレイヤーの速度を取得する
 	/// </summary>
 	/// <returns></returns>
 	const Vector3& GetVelocity() { return velocity_; }
 
 	/// <summary>
-	/// 获得玩家的世界变换
+	/// プレイヤーのワールドトランスフォームを取得する
 	/// </summary>
 	/// <returns></returns>
 	WorldTransform& GetWorldTransform();
@@ -150,19 +150,19 @@ public:
 	//========================玩家和敌人的判定AABB=============================
 
 	/// <summary>
-	/// 获得玩家的世界位置坐标
+	/// プレイヤーのワールド座標を取得する
 	/// </summary>
 	/// <returns></returns>
 	Vector3 GetWorldPosition();
 
 	/// <summary>
-	/// 获得玩家aabb
+	/// プレイヤーのAABBを取得する　AABB：Axis Aligned Bounding Box 軸平行境界箱
 	/// </summary>
 	/// <returns></returns>
 	AABB GetAABB();
 
 	/// <summary>
-	/// 冲突结果
+	/// 衝突の結果を取得する
 	/// </summary>
 	void OnCollision(const Enemy* enemy);
 

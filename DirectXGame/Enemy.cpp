@@ -15,6 +15,7 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 	walkTimer_ = 0.0f;
 }
 
+//　更新
 void Enemy::Update() {
 	// Move
 	worldTransform_.translation_ += velocity_;
@@ -23,7 +24,6 @@ void Enemy::Update() {
 	walkTimer_ += 1.0f / 60.0f;
 
 	// 正弦回转动画
-
 	float param = std::sin(std::numbers::pi_v<float> * 2.0f * walkTimer_);
 	float radian = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
 	worldTransform_.rotation_.z = std::sin(radian);
@@ -32,6 +32,7 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 }
 
+// 描画
 void Enemy::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
 
 Vector3 Enemy::GetWorldPosition() {

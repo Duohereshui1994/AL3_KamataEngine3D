@@ -5,6 +5,13 @@ Player::Player() {}
 
 Player::~Player() {}
 
+/// <summary>
+/// 初期化
+/// </summary>
+/// <param name="model">モデル</param>
+/// <param name="viewProjection">ビュープロジェクション変換データ</param>
+/// <param name="position">位置の座標</param>
+/// <param name="gameScene">ゲームシーン</param>
 void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, GameScene* gameScene) {
 	assert(model);
 	model_ = model;
@@ -16,30 +23,33 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	gameScene_ = gameScene;
 }
 
+/// <summary>
+/// 更新
+/// </summary>
 void Player::Update() {
 
-	// 1 移动入力
+	// 1 移動入力
 	Move();
-	// 2 冲突判定
+	// 2 衝突判定
 	CollisionMapInfo collisionMapInfo;
 	collisionMapInfo.move = velocity_;
 	IsMapChipCollision(collisionMapInfo);
-	// 3 反应冲突判定的结果
+	// 3 衝突判定の結果を反映する
 	CollisionResultMove(collisionMapInfo);
-	// 4 天花板冲突
+	// 4 てんじょう天井の衝突判定
 	CeilingCollision(collisionMapInfo);
-	// 5 墙壁冲突
+	// 5 壁の衝突判定
 	WallCollision(collisionMapInfo);
-	// 6 落地状态切换
+	// 6 接地判定
 	LandingSwitch(collisionMapInfo);
-	// 7 旋回制御
+	// 7 せんかい旋回制御
 	ConvolutionalControl();
-	// 8 更新位置
+	// 8 位置の更新
 	worldTransform_.UpdateMatrix();
 }
 
 /// <summary>
-/// 移动
+/// 移動
 /// </summary>
 void Player::Move() {
 
@@ -116,7 +126,7 @@ void Player::ConvolutionalControl() {
 void Player::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
 
 /// <summary>
-/// 获得玩家的世界位置坐标
+/// プレイヤーのワールド座標を取得する
 /// </summary>
 Vector3 Player::GetWorldPosition() {
 	Vector3 worldPos = {};
@@ -127,13 +137,13 @@ Vector3 Player::GetWorldPosition() {
 }
 
 /// <summary>
-/// 获得世界变换
+/// ワールドトランスフォームを取得する
 /// </summary>
 /// <returns></returns>
 WorldTransform& Player::GetWorldTransform() { return worldTransform_; }
 
 /// <summary>
-/// 获得玩家的AABB
+/// プレイヤーのAABBを取得する　　AABB：Axis Aligned Bounding Box 軸平行境界箱
 /// </summary>
 /// <returns></returns>
 AABB Player::GetAABB() {
@@ -154,10 +164,10 @@ void Player::OnCollision(const Enemy* enemy) {
 	gameScene_->SetIsDead(true);
 }
 
-#pragma region 玩家和地图块的碰撞
+#pragma region 玩家和地图块的碰撞 
 
 /// <summary>
-/// 获得角点位置
+/// コーナーの位置を取得する
 /// </summary>
 /// <param name="center">中心</param>
 /// <param name="corner">角点</param>
@@ -174,9 +184,8 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 }
 
 /// <summary>
-/// map冲突判定
+/// 全部マップチップの衝突判定
 /// </summary>
-/// <param name="info"></param>
 void Player::IsMapChipCollision(CollisionMapInfo& info) {
 	IsMapChipUPCollision(info);
 	IsMapChipDownCollision(info);
@@ -184,6 +193,7 @@ void Player::IsMapChipCollision(CollisionMapInfo& info) {
 	IsMapChipLeftCollision(info);
 }
 
+// 上方向のマップチップの衝突判定
 void Player::IsMapChipUPCollision(CollisionMapInfo& info) {
 	// 上升？ 早期return
 	if (info.move.y <= 0) {
@@ -224,6 +234,7 @@ void Player::IsMapChipUPCollision(CollisionMapInfo& info) {
 	}
 }
 
+// 下方向のマップチップの衝突判定
 void Player::IsMapChipDownCollision(CollisionMapInfo& info) {
 	// if player up return
 	if (info.move.y >= 0) {
@@ -270,6 +281,7 @@ void Player::IsMapChipDownCollision(CollisionMapInfo& info) {
 	}
 }
 
+// 右方向のマップチップの衝突判定
 void Player::IsMapChipRightCollision(CollisionMapInfo& info) {
 	if (info.move.x <= 0) {
 		return;
@@ -309,6 +321,7 @@ void Player::IsMapChipRightCollision(CollisionMapInfo& info) {
 	}
 }
 
+// 左方向のマップチップの衝突判定
 void Player::IsMapChipLeftCollision(CollisionMapInfo& info) {
 	if (info.move.x >= 0) {
 		return;
@@ -348,8 +361,10 @@ void Player::IsMapChipLeftCollision(CollisionMapInfo& info) {
 	}
 }
 
+// 衝突判定の結果を反映する
 void Player::CollisionResultMove(CollisionMapInfo& info) { worldTransform_.translation_ = Add(worldTransform_.translation_, info.move); }
 
+// てんじょう天井の衝突判定
 void Player::CeilingCollision(Player::CollisionMapInfo& info) {
 	if (info.ceiling) {
 		velocity_.y = 0.0f;
@@ -359,12 +374,14 @@ void Player::CeilingCollision(Player::CollisionMapInfo& info) {
 	}
 }
 
+// 壁の衝突判定
 void Player::WallCollision(Player::CollisionMapInfo& info) {
 	if (info.hitWall) {
 		velocity_.x *= (1 - kAttenuationWall);
 	}
 }
 
+// 6 接地判定
 void Player::LandingSwitch(CollisionMapInfo& info) {
 	velocity_ = Add(velocity_, {0.0f, -kGravityAcceleration, 0.0f});
 	velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);

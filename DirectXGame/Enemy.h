@@ -8,7 +8,7 @@ class Player;
 class Enemy {
 
 private:
-	//=====================碰撞=====================
+	//=====================碰撞size=====================
 
 	static inline const float kWidth = 1.99f;
 	static inline const float kHeight = 1.99f;
@@ -33,12 +33,13 @@ private:
 	Model* model_ = nullptr;
 
 public:
+	// 初期化
 	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
-
+	// 更新
 	void Update();
-
+	// 描画
 	void Draw();
-
+	// ワールドトランスフォームを取得する
 	WorldTransform& GetWorldTransform() { return worldTransform_; }
 
 	//===================冲突判定===================

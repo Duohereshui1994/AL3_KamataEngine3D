@@ -19,20 +19,20 @@ private:
 	std::array<WorldTransform, kNumParticles> worldTransforms_;
 
 	//===================粒子移动====================
-	//粒子运动持续时间
+	//粒子运动持续时间 持続時間
 	static inline const float kDuration = 1.0f;
 	//粒子速度
 	static inline const float kSpeed = 0.1f;
 	//粒子分割数
 	static inline const float kAngleUnit = std::numbers::pi_v<float> * 2 / kNumParticles;
 	
-	//===================粒子消失====================
+	//===================粒子消失 消える====================
 	//flag
 	bool isFinished_ = false;
 	//倒计时
 	float counter_ = 0.0f;
 
-	//===================粒子变浅====================
+	//===================粒子变浅　浅くなる====================
 	ObjectColor objectColor_;
 	Vector4 color_;
 
@@ -52,5 +52,9 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// フラグ
+	/// </summary>
+	/// <returns></returns>
 	bool IsFinished() { return isFinished_; }
 };
