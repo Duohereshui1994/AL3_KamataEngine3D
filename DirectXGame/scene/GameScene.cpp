@@ -12,7 +12,9 @@ GameScene::~GameScene() {
 	//===================================================================
 
 	// 解放模型
-	delete model_;
+	//delete model_;
+
+	delete _modelBlock;
 
 	delete _modelSkydemo;
 
@@ -65,7 +67,9 @@ void GameScene::Initialize() {
 
 	//====================Model=========================
 
-	model_ = Model::Create();
+	//model_ = Model::Create();
+
+	_modelBlock = Model::CreateFromOBJ("block", true); // block model
 
 	_modelSkydemo = Model::CreateFromOBJ("skydome", true); // 天球モデル
 
@@ -225,7 +229,8 @@ void GameScene::Draw() {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			if (!worldTransformBlock)
 				continue;
-			model_->Draw(*worldTransformBlock, viewProjection_);
+			//model_->Draw(*worldTransformBlock, viewProjection_);
+			_modelBlock->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
 

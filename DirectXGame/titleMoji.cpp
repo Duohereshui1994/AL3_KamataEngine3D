@@ -6,7 +6,8 @@ void titleMoji::Initialize(Model* model, ViewProjection* viewProjection, const V
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
 	worldTransform_.scale_ = {10.0f, 10.0f, 10.0f};
-	worldTransform_.rotation_.x = -1 * std::numbers::pi_v<float> / 2.0f;
+	//worldTransform_.rotation_.x = -1 * std::numbers::pi_v<float> / 2.0f;
+	worldTransform_.rotation_.y = 1 * std::numbers::pi_v<float>;
 	viewProjection_ = viewProjection;
 }
 
@@ -16,6 +17,7 @@ void titleMoji::Update() {
 	} else {
 		deltaTime += 1.0f / 60.0f;
 	}
+	worldTransform_.translation_.x = 2.0f * std::sin(deltaTime * std::numbers::pi_v<float> / 2.0f);
 	worldTransform_.translation_.y = 2.0f * std::sin(deltaTime * std::numbers::pi_v<float> / 2.0f);
 	worldTransform_.UpdateMatrix();
 }

@@ -89,7 +89,9 @@ private: // メンバ変数	成员变量
 
 	DebugCamera* debugCamera_ = nullptr;
 
-	Model* model_ = nullptr;
+	//Model* model_ = nullptr;
+
+	Model* _modelBlock = nullptr;
 
 	Model* _modelSkydemo = nullptr;
 
