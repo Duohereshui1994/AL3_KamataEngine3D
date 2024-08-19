@@ -117,7 +117,7 @@ private: // メンバ変数	成员变量
 	//enemy
 	//Enemy* _enemy = nullptr;
 	std::list<Enemy*> _enemies;//多个敌人
-	static inline const uint32_t enemyCount = 3;
+	static inline const uint32_t enemyCount = 9;
 
 	//粒子
 	DeathParticles* deathParticles_ = nullptr;

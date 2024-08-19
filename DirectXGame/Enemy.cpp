@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Player.h"
 
 void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
 	//===================常规初始化========================
@@ -7,7 +8,7 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
 	// 模型旋转二分之三Pi。调整转向
-	worldTransform_.rotation_.y = std::numbers::pi_v<float> * 3.0f / 2.0f;
+	worldTransform_.rotation_.y = std::numbers::pi_v<float> * 1.0f / 2.0f;
 	viewProjection_ = viewProjection;
 
 	//========================动画相关初始化==============================
@@ -17,6 +18,7 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 
 //　更新
 void Enemy::Update() {
+
 	// Move
 	worldTransform_.translation_ += velocity_;
 
