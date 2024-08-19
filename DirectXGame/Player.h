@@ -30,11 +30,11 @@ private:
 	Vector3 velocity_ = {};
 
 	// 加速度
-	static inline const float kAcceleration = 0.1f;
+	static inline const float kAcceleration = 0.05f;
 	// 速度衰减系数
-	static inline const float kAttenuation = 0.05f;
+	static inline const float kAttenuation = 0.03f;
 	// 最大速度
-	static inline const float kLimitRunSpeed = 0.5f;
+	static inline const float kLimitRunSpeed = 0.3f;
 
 	//===================円滑回転===================
 	// 方向
@@ -54,7 +54,7 @@ private:
 	// 最大落下速度
 	static inline const float kLimitFallSpeed = 0.5f;
 	// 跳跃初速度（上）
-	static inline const float kJumpAcceleration = 0.5f; // 方法1 std::max 的对应参数
+	static inline const float kJumpAcceleration = 0.4f; // 方法1 std::max 的对应参数
 	// static inline const float kJumpAcceleration = 2.0f;//方法2 std::clamp 的对应参数
 
 	//===================当たり判定===================
@@ -71,7 +71,7 @@ private:
 	// 着地时速度衰减率
 	static inline const float kAttenuationLanding = 0.1f;
 	// 撞墙减速率
-	static inline const float kAttenuationWall = 0.6f;
+	static inline const float kAttenuationWall = 0.95f;
 	//===================Others===================
 
 	//ワールド変換
