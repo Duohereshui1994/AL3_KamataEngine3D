@@ -73,7 +73,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成		GameWindow制作
 	win = WinApp::GetInstance();
-	win->CreateGameWindow(L"GC2A_04_ゴ_ウ_AL3"); // User Name
+	win->CreateGameWindow(L"GC2A_04_ゴ_ウ_RUN"); // User Name
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();

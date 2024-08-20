@@ -161,19 +161,19 @@ void GameScene::Update() {
 
 	//===================================================================
 
-#ifdef _DEBUG
-	if (input_->TriggerKey(DIK_SPACE)) {
-		isDebugCameraActive = !isDebugCameraActive;
-	}
-	ImGui::Begin("Debug1");
-	ImGui::Text("Press Space To Change Camera");
-	ImGui::Text("isDebugCameraActive = %d", isDebugCameraActive);
-	ImGui::Text("onGround = %d", _player->IsOnGround());
-
-	ImGui::Text("isdead = %d", IsDead());
-
-	ImGui::End();
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	if (input_->TriggerKey(DIK_SPACE)) {
+//		isDebugCameraActive = !isDebugCameraActive;
+//	}
+//	ImGui::Begin("Debug1");
+//	ImGui::Text("Press Space To Change Camera");
+//	ImGui::Text("isDebugCameraActive = %d", isDebugCameraActive);
+//	ImGui::Text("onGround = %d", _player->IsOnGround());
+//
+//	ImGui::Text("isdead = %d", IsDead());
+//
+//	ImGui::End();
+//#endif // _DEBUG
 
 	//=======================phase更新================
 	ChangePhase();
