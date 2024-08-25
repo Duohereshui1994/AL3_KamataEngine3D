@@ -175,15 +175,15 @@ void GameScene::Update() {
 
 	//===================================================================
 
-#ifdef _DEBUG
-	if (input_->TriggerKey(DIK_SPACE)) {
-		isDebugCameraActive = !isDebugCameraActive;
-	}
-	ImGui::Begin("Debug1");
-	ImGui::Text("move y = %f", _player->GetVelocity().y);
-
-	ImGui::End();
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	if (input_->TriggerKey(DIK_SPACE)) {
+//		isDebugCameraActive = !isDebugCameraActive;
+//	}
+//	ImGui::Begin("Debug1");
+//	ImGui::Text("move y = %f", _player->GetVelocity().y);
+//
+//	ImGui::End();
+//#endif // _DEBUG
 
 	//=======================phase更新================
 	ChangePhase();
