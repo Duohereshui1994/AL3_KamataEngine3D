@@ -14,6 +14,7 @@ private:
 	DirectXCommon* dxCommon_ = nullptr;
 
 	uint32_t bgTextureHandle_ = 0;
+	Sprite* sprite_ = nullptr;
 
 	Model* modelTitle_ = nullptr;
 	ViewProjection viewProjection_;

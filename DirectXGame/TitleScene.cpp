@@ -1,10 +1,12 @@
 #include "TitleScene.h"
+#include "TextureManager.h"
 
 TitleScene::TitleScene() {}
 
 TitleScene::~TitleScene() {
 	delete modelTitle_;
 	delete moji_;
+	delete sprite_;
 }
 
 void TitleScene::Initialize() {
@@ -15,7 +17,8 @@ void TitleScene::Initialize() {
 
 	modelTitle_ = Model::CreateFromOBJ("title", true);
 
-	bgTextureHandle_ = TextureManager::Load("title.png");
+	bgTextureHandle_ = TextureManager::Load("bg.png");
+	sprite_ = Sprite::Create(bgTextureHandle_, {0,0});
 
 	moji_ = new titleMoji();
 	Vector3 position = {0.0f, 0.0f, 0.0f};
@@ -34,6 +37,10 @@ void TitleScene::Draw() {
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
 	Model::PreDraw(commandList);
+
+	sprite_->Draw();
+
 	moji_->Draw();
+
 	Model::PostDraw();
 }
