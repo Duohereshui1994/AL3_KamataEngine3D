@@ -12,6 +12,7 @@
 #include <cassert>
 #include "Skydome.h"
 #include "MapChipField.h"
+#include "Goal.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "DeathParticles.h"
@@ -93,6 +94,8 @@ private: // メンバ変数	成员变量
 
 	Model* _modelBlock = nullptr;
 
+	Model* _modelGoal = nullptr;
+
 	Model* _modelSkydemo = nullptr;
 
 	Model* _modelPlayerOBJ = nullptr;
@@ -110,6 +113,9 @@ private: // メンバ変数	成员变量
 
 	//MapChip
 	MapChipField* _mapChipField = nullptr;
+
+	//Goal
+	Goal* _goal = nullptr;
 
 	//player
 	Player* _player = nullptr;

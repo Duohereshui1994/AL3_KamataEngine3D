@@ -15,6 +15,8 @@ void TitleScene::Initialize() {
 
 	modelTitle_ = Model::CreateFromOBJ("title", true);
 
+	bgTextureHandle_ = TextureManager::Load("title.png");
+
 	moji_ = new titleMoji();
 	Vector3 position = {0.0f, 0.0f, 0.0f};
 	moji_->Initialize(modelTitle_, &viewProjection_, position);

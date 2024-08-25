@@ -13,6 +13,8 @@ private:
 
 	DirectXCommon* dxCommon_ = nullptr;
 
+	uint32_t bgTextureHandle_ = 0;
+
 	Model* modelTitle_ = nullptr;
 	ViewProjection viewProjection_;
 

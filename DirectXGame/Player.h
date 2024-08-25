@@ -22,6 +22,8 @@ class MapChipField;
 
 class Enemy;
 
+class Goal;
+
 class Player {
 private:
 	// ゲームシーン　ポインタ
@@ -66,7 +68,7 @@ private:
 	static inline const float kWidth = 1.99f;
 	static inline const float kHeight = 1.99f;
 
-	static inline const float kBlank = 0.01f; // 微小余白
+	static inline const float kBlank = 0.03f; // 微小余白
 
 	// 着地时速度衰减率
 	static inline const float kAttenuationLanding = 0.1f;
@@ -165,6 +167,7 @@ public:
 	/// 衝突の結果を取得する
 	/// </summary>
 	void OnCollision(const Enemy* enemy);
+	void OnCollision(const Goal* goal);
 
 	//=========================玩家和地图块的判定============================
 	void IsMapChipCollision(CollisionMapInfo& info);

@@ -17,7 +17,6 @@ void titleMoji::Update() {
 	} else {
 		deltaTime += 1.0f / 60.0f;
 	}
-	worldTransform_.translation_.x = 2.0f * std::sin(deltaTime * std::numbers::pi_v<float> / 2.0f);
 	worldTransform_.translation_.y = 2.0f * std::sin(deltaTime * std::numbers::pi_v<float> / 2.0f);
 	worldTransform_.UpdateMatrix();
 }

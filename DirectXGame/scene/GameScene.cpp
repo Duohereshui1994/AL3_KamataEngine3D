@@ -16,6 +16,8 @@ GameScene::~GameScene() {
 
 	delete _modelBlock;
 
+	delete _modelGoal;
+
 	delete _modelSkydemo;
 
 	delete _modelPlayerOBJ;
@@ -46,6 +48,8 @@ GameScene::~GameScene() {
 	delete _mapChipField;
 
 	delete _cameraController;
+
+	delete _goal;
 	//===================================================================
 }
 
@@ -71,6 +75,8 @@ void GameScene::Initialize() {
 
 	_modelBlock = Model::CreateFromOBJ("block", true); // block model
 
+	_modelGoal = Model::CreateFromOBJ("goal", true); // goal model
+
 	_modelSkydemo = Model::CreateFromOBJ("skydome", true); // 天球モデル
 
 	_modelPlayerOBJ = Model::CreateFromOBJ("playerOBJ", true); // player model
@@ -94,11 +100,19 @@ void GameScene::Initialize() {
 	_mapChipField = new MapChipField();
 	_mapChipField->LoadMapChipCsv("Resources/block.csv");
 
+	//======================Goal=========================
+
+	_goal = new Goal();
+
+	Vector3 goalPosition = _mapChipField->GetMapChipPositionByIndex(98, 16);
+
+	_goal->Initialize(_modelGoal, &viewProjection_, goalPosition);
+
 	//======================Player=========================
 
 	_player = new Player();
 
-	Vector3 playerPosition = _mapChipField->GetMapChipPositionByIndex(2, 18);
+	Vector3 playerPosition = _mapChipField->GetMapChipPositionByIndex(5, 18);
 
 	_player->Initialize(_modelPlayerOBJ, &viewProjection_, playerPosition, this);
 
@@ -117,7 +131,7 @@ void GameScene::Initialize() {
 	Vector3 enemyPosition[enemyCount];
 	for (uint32_t i = 0; i < enemyCount; ++i) {
 		Enemy* newEnemy = new Enemy();
-		enemyPosition[i] = _mapChipField->GetMapChipPositionByIndex(10, 18 - i * 2);
+		enemyPosition[i] = _mapChipField->GetMapChipPositionByIndex(0, 18 - i * 2);
 		newEnemy->Initialize(_modelEnemyOBJ, &viewProjection_, enemyPosition[i]);
 		_enemies.push_back(newEnemy);
 	}
@@ -161,19 +175,15 @@ void GameScene::Update() {
 
 	//===================================================================
 
-//#ifdef _DEBUG
-//	if (input_->TriggerKey(DIK_SPACE)) {
-//		isDebugCameraActive = !isDebugCameraActive;
-//	}
-//	ImGui::Begin("Debug1");
-//	ImGui::Text("Press Space To Change Camera");
-//	ImGui::Text("isDebugCameraActive = %d", isDebugCameraActive);
-//	ImGui::Text("onGround = %d", _player->IsOnGround());
-//
-//	ImGui::Text("isdead = %d", IsDead());
-//
-//	ImGui::End();
-//#endif // _DEBUG
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_SPACE)) {
+		isDebugCameraActive = !isDebugCameraActive;
+	}
+	ImGui::Begin("Debug1");
+	ImGui::Text("move y = %f", _player->GetVelocity().y);
+
+	ImGui::End();
+#endif // _DEBUG
 
 	//=======================phase更新================
 	ChangePhase();
@@ -234,6 +244,10 @@ void GameScene::Draw() {
 		}
 	}
 
+	//======================Goal====================
+
+	_goal->Draw();
+
 	//=======================Player描画================
 	if (!isDead_) {
 		_player->Draw();
@@ -292,6 +306,19 @@ void GameScene::CheckAllCollisions() {
 		}
 	}
 #pragma endregion
+
+#pragma region player and goal
+	// プレイヤーとGoalの衝突判定
+	AABB aabb3;
+
+	aabb3 = _goal->GetAABB();
+
+	if (IsCollision(aabb1, aabb3)) {
+		_player->OnCollision(_goal);
+		_goal->OnCollision(_player);
+	}
+
+#pragma endregion
 }
 
 void GameScene::GenerateBlocks() {
@@ -327,6 +354,10 @@ void GameScene::ChangePhase() {
 			worldTransformBlock->UpdateMatrix();
 		}
 	}
+
+	//===================Goal=================
+
+	_goal->Update();
 
 	//=======================Enemy更新================
 	//_enemy->Update();

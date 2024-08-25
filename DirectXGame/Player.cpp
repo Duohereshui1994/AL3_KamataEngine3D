@@ -53,6 +53,7 @@ void Player::Update() {
 /// </summary>
 void Player::Move() {
 
+
 	// if (!onGround_) {
 	//	velocity_ = Add(velocity_, {0.0f, -kGravityAcceleration, 0.0f});
 	//	velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
@@ -160,6 +161,12 @@ AABB Player::GetAABB() {
 /// <param name="enemy"></param>
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
+
+	gameScene_->SetIsDead(true);
+}
+
+void Player::OnCollision(const Goal* goal) {
+	(void)goal;
 
 	gameScene_->SetIsDead(true);
 }

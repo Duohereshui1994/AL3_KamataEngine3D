@@ -5,26 +5,12 @@
 #include <numbers>
 
 class Player;
-class Enemy {
-
+class Goal {
 private:
 	//=====================碰撞size=====================
 
 	static inline const float kWidth = 1.99f;
 	static inline const float kHeight = 1.99f;
-
-	//===================Move===================
-
-	static inline const float kWalkSpeed = 0.035f;
-	Vector3 velocity_ = {kWalkSpeed, 0.0f, 0.0f};
-
-	//===================Animation===============
-
-	static inline const float kWalkMotionAngleStart = 0;                           // 最初的角度
-	static inline const float kWalkMotionAngleEnd = 1 * std::numbers::pi_v<float>; // 最后的角度
-	static inline const float kWalkMotionTime = 2.0f;                              // 动画周期时间（秒）
-
-	float walkTimer_ = 0.0f; // 动画计时器经过时间
 
 	//===================Others===================
 
@@ -60,4 +46,6 @@ public:
 	void OnCollision(const Player* player);
 
 	//==============================================
+
+
 };
