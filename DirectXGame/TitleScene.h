@@ -1,6 +1,7 @@
 #pragma once
 #include "DirectXCommon.h"
 #include "Input.h"
+#include "Sprite.h"
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
