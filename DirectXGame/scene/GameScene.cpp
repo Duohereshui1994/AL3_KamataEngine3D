@@ -186,6 +186,10 @@ void GameScene::Update() {
 //#endif // _DEBUG
 
 	//=======================phase更新================
+	if (Input::GetInstance()->PushKey(DIK_BACKSPACE)) {
+		_player->OnCollision(_goal);
+	}
+
 	ChangePhase();
 
 	//=============================================
